@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service/theme.service';
 
+type Theme = 'dark' | 'light';
+
 
 @Component({
   selector: 'app-top-bar',
@@ -10,13 +12,15 @@ import { ThemeService } from '../../services/theme.service/theme.service';
   styleUrl: './top-bar.css',
 })
 export class TopBar implements OnInit {
+  themeMode: Theme = 'dark';
+
   constructor(private theme: ThemeService) { }
 
   ngOnInit(): void {
-    this.theme.initTheme();
+    this.themeMode = this.theme.initTheme();
   }
 
   toggleTheme(): void {
-    this.theme.toggleTheme();
+    this.themeMode = this.theme.toggleTheme();
   }
 }
