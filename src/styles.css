@@ -1,2 +1,286 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    [data-theme="dark"] {
+        --bg: #04040e;
+        --bg-soft: #080c1a;
+        --fg: #fff;
+        --slate: #8892a4;
+        --card: rgba(255, 255, 255, .04);
+        --border: rgba(255, 255, 255, .08);
+        --muted: rgba(255, 255, 255, .52);
+        --sub: rgba(255, 255, 255, .42);
+        --body: rgba(255, 255, 255, .60);
+        --nav: rgba(4, 4, 14, .90);
+        --grid: rgba(37, 99, 235, .055);
+        --fade: #04040e;
+        --ibr: 1;
+        --o1: rgba(37, 99, 235, .16);
+        --o2: rgba(20, 184, 166, .10);
+        --o3: rgba(139, 92, 246, .09);
+    }
+
+    [data-theme="light"] {
+        --bg: #eff3ff;
+        --bg-soft: #e2eaff;
+        --fg: #0d1117;
+        --slate: #5a6478;
+        --card: rgba(255, 255, 255, .78);
+        --border: rgba(0, 0, 0, .08);
+        --muted: rgba(13, 17, 23, .55);
+        --sub: rgba(13, 17, 23, .45);
+        --body: rgba(13, 17, 23, .65);
+        --nav: rgba(239, 243, 255, .92);
+        --grid: rgba(37, 99, 235, .07);
+        --fade: #eff3ff;
+        --ibr: .88;
+        --o1: rgba(37, 99, 235, .08);
+        --o2: rgba(20, 184, 166, .06);
+        --o3: rgba(139, 92, 246, .05);
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: 'Instrument Sans', sans-serif;
+        overflow-x: hidden;
+        transition: background .4s, color .4s;
+    }
+
+    nav {
+        background: var(--nav);
+        border-bottom: 1px solid var(--border);
+    }
+
+    #hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(var(--grid) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 64px 64px;
+        -webkit-mask-image: radial-gradient(ellipse at 65% 40%, black 25%, transparent 68%);
+        mask-image: radial-gradient(ellipse at 65% 40%, black 25%, transparent 68%);
+    }
+}
+
+@layer utilities {
+    .t-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+    }
+
+    .t-border {
+        border-color: var(--border);
+    }
+
+    .t-fg {
+        color: var(--fg);
+    }
+
+    .t-slate {
+        color: var(--slate);
+    }
+
+    .t-muted {
+        color: var(--muted);
+    }
+
+    .t-sub {
+        color: var(--sub);
+    }
+
+    .t-body {
+        color: var(--body);
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    .d1 {
+        transition-delay: .08s;
+    }
+
+    .d2 {
+        transition-delay: .18s;
+    }
+
+    .d3 {
+        transition-delay: .28s;
+    }
+
+    .d4 {
+        transition-delay: .36s;
+    }
+
+    .tl-item {
+        opacity: 0;
+        transform: translateX(-18px);
+        transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .tl-item.tl-vis {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .ticker-outer {
+        overflow: hidden;
+    }
+
+    .ticker-outer::before,
+    .ticker-outer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 130px;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .ticker-outer::before {
+        left: 0;
+        background: linear-gradient(to right, var(--fade), transparent);
+    }
+
+    .ticker-outer::after {
+        right: 0;
+        background: linear-gradient(to left, var(--fade), transparent);
+    }
+
+    .ticker-track {
+        display: flex;
+        width: max-content;
+        animation: tickerScroll 32s linear infinite;
+    }
+
+    .ticker-track:hover {
+        animation-play-state: paused;
+    }
+
+    .tech-icon {
+        filter: brightness(var(--ibr));
+        transition: filter .4s;
+    }
+
+    [data-theme="dark"] #githubIcon {
+        filter: invert(1) brightness(.85);
+    }
+
+    [data-theme="light"] #githubIcon {
+        filter: none;
+    }
+
+    .lang-pill::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(37, 99, 235, .12), transparent);
+        opacity: 0;
+        transition: opacity .3s;
+    }
+
+    .lang-pill:hover::before {
+        opacity: 1;
+    }
+
+    .contact-email::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #2563eb;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform .3s;
+    }
+
+    .contact-email:hover::after {
+        transform: scaleX(1);
+    }
+
+    .section-label::after {
+        content: '';
+        max-width: 60px;
+        height: 1px;
+        background: #60a5fa;
+        opacity: .4;
+    }
+
+    .about-quote {
+        background: rgba(37, 99, 235, .07);
+        border-left: 3px solid #2563eb;
+    }
+
+    .photo-border {
+        background: linear-gradient(140deg, #2563eb, #14b8a6, #1e3a8a);
+    }
+
+    .lang-bar {
+        transform-origin: left;
+        animation: barGrow 1.4s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    .tl-dot-default {
+        box-shadow: 0 0 0 2px #2563eb, 0 0 14px rgba(37, 99, 235, .45);
+        border: 3px solid var(--bg);
+    }
+
+    .tl-dot-current {
+        box-shadow: 0 0 0 2px #14b8a6, 0 0 18px rgba(20, 184, 166, .55);
+        border: 3px solid var(--bg);
+        animation: dotGlow 2s ease-in-out infinite;
+    }
+
+    .xp-row {
+        border-top: 1px solid var(--border);
+    }
+
+    .avail-strip {
+        background: rgba(34, 197, 94, .07);
+        border: 1px solid rgba(34, 197, 94, .2);
+    }
+
+    .bento-xp {
+        background: linear-gradient(140deg, rgba(37, 99, 235, .14), rgba(14, 165, 233, .05));
+        border: 1px solid rgba(37, 99, 235, .22);
+    }
+
+    .tl-line::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 12px;
+        bottom: 12px;
+        width: 2px;
+        background: linear-gradient(to bottom, #2563eb, #14b8a6, transparent);
+        border-radius: 2px;
+    }
+
+    .contact-glow {
+        background: radial-gradient(ellipse, rgba(37, 99, 235, .1), transparent 68%);
+    }
+}
+
+@media (max-width: 920px) {
+    .hide-mobile {
+        display: none;
+    }
+}

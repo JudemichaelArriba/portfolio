@@ -1,1 +1,79 @@
-<p>hero works!</p>
+<section id="hero"
+    class="min-h-screen grid grid-cols-2 max-[920px]:grid-cols-1 items-center pt-[130px] pb-20 px-16 max-[920px]:px-6 gap-16 relative z-[1] overflow-hidden">
+    <div class="relative z-[2] animate-fade-up-1">
+        <!-- tag -->
+        <div
+            class="inline-flex items-center gap-2 font-mono text-[.7rem] text-blue-glow border border-blue-glow/30 px-4 py-1.5 rounded-full mb-8 uppercase tracking-[.09em] animate-fade-up-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-glow animate-pulse-dot"></span>
+            Available for work
+        </div>
+
+        <h1
+            class="font-syne font-black leading-[.93] tracking-[-0.04em] mb-4 text-[clamp(3.2rem,5.2vw,5.8rem)] t-fg animate-fade-up-2">
+            Your Name<br>
+            <span class="text-blue-glow block">Here.</span>
+        </h1>
+
+        <p class="font-mono text-[.88rem] t-slate mb-7 tracking-[.04em] animate-fade-up-3">
+            Full-Stack Developer · <span class="text-teal">Mobile &amp; Web</span>
+        </p>
+
+        <p class="text-base leading-7 t-muted max-w-[460px] mb-11 animate-fade-up-4">
+            Building clean, scalable applications — from backend APIs to polished mobile experiences. I write code that
+            ships, performs, and lasts.
+        </p>
+
+        <div class="flex gap-3 flex-wrap animate-fade-up-5">
+            <a href="#projects"
+                class="bg-gradient-to-br from-blue-main to-blue-dark text-white px-8 py-3 rounded-md font-syne font-semibold text-[.88rem] tracking-[.02em] shadow-[0_4px_24px_rgba(37,99,235,.32)] hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(37,99,235,.48)] transition-all duration-200">View
+                Projects</a>
+            <a href="#contact"
+                class="bg-transparent t-fg px-8 py-3 rounded-md font-syne font-semibold text-[.88rem] tracking-[.02em] hover:bg-blue-main/7 hover:border-blue-main/50 transition-all duration-200"
+                style="border:1px solid var(--border)">Get in Touch</a>
+        </div>
+
+        <div class="flex gap-11 mt-14 pt-8 animate-fade-up-6" style="border-top:1px solid var(--border)">
+            <div>
+                <div class="font-syne font-black text-[2rem] t-fg">2<span class="text-blue-glow">+</span></div>
+                <div class="font-mono text-[.68rem] t-slate uppercase tracking-widest mt-1">Years Coding</div>
+            </div>
+            <div>
+                <div class="font-syne font-black text-[2rem] t-fg">6<span class="text-blue-glow">+</span></div>
+                <div class="font-mono text-[.68rem] t-slate uppercase tracking-widest mt-1">Languages</div>
+            </div>
+            <div>
+                <div class="font-syne font-black text-[2rem] t-fg">10<span class="text-blue-glow">+</span></div>
+                <div class="font-mono text-[.68rem] t-slate uppercase tracking-widest mt-1">Projects Built</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- photo -->
+    <div class="hide-mobile relative z-[2] flex justify-center items-center animate-fade-up-r">
+        <div class="relative w-[340px] h-[400px]">
+            <div class="photo-border absolute inset-[-2px] rounded-[20px]"></div>
+            <div class="absolute inset-[2px] rounded-[18px] overflow-hidden bg-[#111827]">
+                <div class="w-full h-full flex flex-col items-center justify-center gap-4"
+                    style="background:linear-gradient(160deg,#0c1445 0%,#1e3a8a 55%,#0f172a 100%)">
+                    <div
+                        class="w-[90px] h-[90px] rounded-full bg-blue-main/25 border-2 border-dashed border-blue-glow/40 flex items-center justify-center text-[2.4rem]">
+                        🧑‍💻</div>
+                    <p class="font-mono text-[.68rem] text-blue-glow/55 text-center leading-relaxed">Add your photo
+                        here<br><span class="text-blue-glow/35 text-[.6rem]">Replace with &lt;img&gt;</span></p>
+                </div>
+            </div>
+            <!-- badge 1 -->
+            <div class="absolute bottom-[-18px] left-[-22px] t-card flex items-center gap-2.5 px-4 py-3 rounded-xl backdrop-blur-[16px]"
+                style="border:1px solid var(--border)">
+                <div class="w-2 h-2 rounded-full bg-green-500" style="box-shadow:0 0 8px #22c55e"></div>
+                <span class="font-mono text-[.7rem] t-fg">Open to opportunities</span>
+            </div>
+            <!-- badge 2 -->
+            <div
+                class="absolute top-[-14px] right-[-26px] bg-gradient-to-br from-blue-main to-blue-dark rounded-xl px-4 py-2.5">
+                <div class="font-syne font-bold text-[.78rem] text-white">Full-Stack</div>
+                <div class="font-mono text-[.64rem] text-white/60 mt-0.5">Web &amp; Mobile</div>
+            </div>
+        </div>
+    </div>
+</section>

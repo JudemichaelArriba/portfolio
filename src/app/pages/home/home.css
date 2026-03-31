@@ -1,0 +1,56 @@
+#bg-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
+}
+
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.orb1 {
+    width: 720px;
+    height: 720px;
+    background: radial-gradient(circle, var(--o1), transparent 68%);
+    top: -180px;
+    right: -120px;
+    animation: orbA 24s ease-in-out infinite;
+}
+
+.orb2 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--o2), transparent 68%);
+    bottom: -80px;
+    left: -80px;
+    animation: orbB 30s ease-in-out infinite;
+}
+
+.orb3 {
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, var(--o3), transparent 68%);
+    top: 42%;
+    left: 46%;
+    animation: orbC 20s ease-in-out infinite;
+}
