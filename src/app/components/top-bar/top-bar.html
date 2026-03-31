@@ -4,26 +4,43 @@
         Arriba<span class="text-blue-glow">.</span>com
     </a>
     <ul class="hide-mobile flex gap-9 list-none items-center">
-        <li><a href="#about"
-                class="font-mono text-[.76rem] t-slate uppercase tracking-widest no-underline hover:t-fg transition-colors duration-200">About</a>
-        </li>
-        <li><a href="#experience"
-                class="font-mono text-[.76rem] t-slate uppercase tracking-widest no-underline hover:t-fg transition-colors duration-200">Experience</a>
-        </li>
-        <li><a href="#skills"
-                class="font-mono text-[.76rem] t-slate uppercase tracking-widest no-underline hover:t-fg transition-colors duration-200">Stack</a>
-        </li>
-        <li><a href="#projects"
-                class="font-mono text-[.76rem] t-slate uppercase tracking-widest no-underline hover:t-fg transition-colors duration-200">Projects</a>
+        <li>
+            <a href="#about"
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'about'"
+                [class.t-slate]="activeSection !== 'about'">
+                About
+            </a>
         </li>
         <li>
-            <a href="#contact" class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-5 py-2 rounded
-          text-blue-main dark:text-blue-glow">
+            <a href="#experience"
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'experience'"
+                [class.t-slate]="activeSection !== 'experience'">
+                Experience
+            </a>
+        </li>
+        <li>
+            <a href="#skills"
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'skills'"
+                [class.t-slate]="activeSection !== 'skills'">
+                Stack
+            </a>
+        </li>
+        <li>
+            <a href="#projects"
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'projects'"
+                [class.t-slate]="activeSection !== 'projects'">
+                Projects
+            </a>
+        </li>
+        <li>
+            <a href="#contact" class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-5 py-2 rounded transition-colors duration-200
+          text-blue-main dark:text-blue-glow hover:text-blue-glow">
                 Contact
             </a>
-
-
-
         </li>
         <li>
             <button (click)="toggleTheme()" aria-label="Toggle theme"
