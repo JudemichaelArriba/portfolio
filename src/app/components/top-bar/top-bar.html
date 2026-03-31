@@ -16,22 +16,24 @@
         <li><a href="#projects"
                 class="font-mono text-[.76rem] t-slate uppercase tracking-widest no-underline hover:t-fg transition-colors duration-200">Projects</a>
         </li>
-        <li><a href="#contact"
-                class="font-mono text-[.76rem] uppercase tracking-widest no-underline bg-blue-main text-white px-5 py-2 rounded hover:bg-blue-dark transition-colors duration-200">Contact</a>
+        <li>
+            <a href="#contact" class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-5 py-2 rounded
+          text-blue-main dark:text-blue-glow">
+                Contact
+            </a>
+
+
+
         </li>
         <li>
             <button (click)="toggleTheme()" aria-label="Toggle theme"
                 class="w-[42px] h-[42px] rounded-[10px] t-card flex items-center justify-center t-slate relative overflow-hidden transition-all duration-200 hover:border-blue-main hover:text-blue-glow hover:bg-blue-main/10"
                 style="border:1px solid var(--border)">
-                <svg class="absolute transition-all duration-300"
-                    [class.opacity-100]="themeMode === 'dark'"
-                    [class.scale-100]="themeMode === 'dark'"
-                    [class.rotate-0]="themeMode === 'dark'"
-                    [class.opacity-0]="themeMode !== 'dark'"
-                    [class.scale-50]="themeMode !== 'dark'"
-                    [class.-rotate-90]="themeMode !== 'dark'"
-                    width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+                <svg class="absolute transition-all duration-300" [class.opacity-100]="themeMode === 'dark'"
+                    [class.scale-100]="themeMode === 'dark'" [class.rotate-0]="themeMode === 'dark'"
+                    [class.opacity-0]="themeMode !== 'dark'" [class.scale-50]="themeMode !== 'dark'"
+                    [class.-rotate-90]="themeMode !== 'dark'" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5" />
                     <line x1="12" y1="1" x2="12" y2="3" />
                     <line x1="12" y1="21" x2="12" y2="23" />
@@ -42,15 +44,11 @@
                     <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
                 </svg>
-                <svg class="absolute transition-all duration-300"
-                    [class.opacity-0]="themeMode === 'dark'"
-                    [class.scale-50]="themeMode === 'dark'"
-                    [class.rotate-90]="themeMode === 'dark'"
-                    [class.opacity-100]="themeMode !== 'dark'"
-                    [class.scale-100]="themeMode !== 'dark'"
-                    [class.rotate-0]="themeMode !== 'dark'"
-                    width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
+                <svg class="absolute transition-all duration-300" [class.opacity-0]="themeMode === 'dark'"
+                    [class.scale-50]="themeMode === 'dark'" [class.rotate-90]="themeMode === 'dark'"
+                    [class.opacity-100]="themeMode !== 'dark'" [class.scale-100]="themeMode !== 'dark'"
+                    [class.rotate-0]="themeMode !== 'dark'" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
             </button>
