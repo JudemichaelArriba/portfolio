@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environements/environment';
-import { User } from '../models/user.model';
+import { User, LoginResponse } from '../models/user.model';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { DialogService } from '../services/dialog.service';
-
+import { map } from 'rxjs/operators'; // Add this import
 
 @Injectable({ providedIn: 'root' })
 export class AuthServices {
@@ -16,7 +16,7 @@ export class AuthServices {
     constructor(private http: HttpClient, private dialog: DialogService) {
         const token = localStorage.getItem(this.tokenKey);
         if (token) {
-            this.currentUserSubject.next({ name: '', email: '', password: '', token });
+            this.currentUserSubject.next({ name: '', email: '', token });
         }
 
     }
@@ -27,14 +27,34 @@ export class AuthServices {
         return localStorage.getItem(this.tokenKey);
     }
 
+    // login(email: string, password: string): Observable<User> {
+    //     return this.http.post<{ user: User; token: string }>(
+    //         `${environment.apiUrl}/login`,
+    //         { email, password }
+    //     ).pipe(
+    //         tap(res => {
+    //             localStorage.setItem(this.tokenKey, res.token);
+    //             this.currentUserSubject.next({ ...res.user, token: res.token });
+    //         }),
+    //         catchError(err => this.handleError(err))
+    //     );
+    // }
+
+
     login(email: string, password: string): Observable<User> {
-        return this.http.post<{ user: User; token: string }>(
+        return this.http.post<LoginResponse>(
             `${environment.apiUrl}/login`,
             { email, password }
         ).pipe(
             tap(res => {
+
                 localStorage.setItem(this.tokenKey, res.token);
+
                 this.currentUserSubject.next({ ...res.user, token: res.token });
+            }),
+
+            map(res => {
+                return { ...res.user, token: res.token };
             }),
             catchError(err => this.handleError(err))
         );

@@ -13,19 +13,18 @@ interface LoginFormControls {
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // CommonModule is needed for classes/pipes
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.html',
 })
 export class Login implements OnInit {
   private themeService = inject(ThemeService);
-  private fb = inject(NonNullableFormBuilder); 
+  private fb = inject(NonNullableFormBuilder);
   private auth = inject(AuthServices);
   private dialog = inject(DialogService);
 
   currentTheme: 'dark' | 'light' = 'dark';
   loginForm: FormGroup<LoginFormControls>;
-  
-  // Track loading state
+
   isLoggingIn = false;
 
   constructor() {
@@ -43,9 +42,46 @@ export class Login implements OnInit {
     this.currentTheme = this.themeService.toggleTheme();
   }
 
+  // submit(): void {
+  //   if (this.loginForm.invalid) {
+  //     this.dialog.error('Validation Error', 'Please check your credentials.');
+  //     this.loginForm.markAllAsTouched();
+  //     return;
+  //   }
+
+  //   this.isLoggingIn = true;
+  //   const { email, password } = this.loginForm.getRawValue();
+
+  //   this.auth.login(email, password).subscribe({
+  //     next: (user) => {
+  //       this.isLoggingIn = false;
+  //       this.dialog.success('Welcome', `Hello ${user.name}`);
+  //     },
+  //     error: (err) => {
+  //       this.isLoggingIn = false;
+
+      
+  //       if (err.status === 0) {
+  //         this.dialog.error(
+  //           'Connection Error',
+  //           'Unable to reach the server. Please check your internet connection or try again later.'
+  //         );
+  //       } else if (err.status === 401) {
+  //         this.dialog.error('Unauthorized', 'Invalid email or password.');
+  //       } else {
+  //         this.dialog.error('Error', 'An unexpected error occurred.');
+  //       }
+
+  //       console.error('Login failed', err);
+  //     }
+  //   });
+  // }
+
+
+
   submit(): void {
     if (this.loginForm.invalid) {
-      this.dialog.error('Validation Error', 'Please fill in all fields correctly.');
+      this.dialog.error('Validation Error', 'Please check your credentials.');
       this.loginForm.markAllAsTouched();
       return;
     }
@@ -54,14 +90,15 @@ export class Login implements OnInit {
     const { email, password } = this.loginForm.getRawValue();
 
     this.auth.login(email, password).subscribe({
-      next: (user) => {
+      next: (userData) => { // This is now a clean User object
         this.isLoggingIn = false;
-        this.dialog.success('Welcome', `Hello ${user.name}`);
+        // userData.name will now be defined!
+        this.dialog.success('Welcome', `Hello ${userData.name}`);
+        // Redirect if needed
       },
       error: (err) => {
         this.isLoggingIn = false;
-        // Logic for your specific Firebase errors can go here
-        console.error('Login failed', err);
+        // Error handled in service, but we stop the spinner here
       }
     });
   }
