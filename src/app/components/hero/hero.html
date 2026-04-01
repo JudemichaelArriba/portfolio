@@ -1,5 +1,5 @@
 <section id="hero"
-    class="min-h-screen grid grid-cols-2 max-[920px]:grid-cols-1 items-center pt-[130px] pb-20 px-16 max-[920px]:px-6 gap-20 relative z-[1] overflow-hidden">
+    class="min-h-screen section-pad grid grid-cols-2 max-[920px]:grid-cols-1 items-center gap-20 overflow-hidden">
 
     <div class="relative z-[2] animate-fade-up-1 max-w-[620px]">
         <h1
@@ -16,6 +16,34 @@
             I design and build clean, scalable applications, from efficient backend APIs to refined mobile experiences,
             with a focus on performance, maintainability, and long-term reliability.
         </p>
+
+        <div class="flex items-center gap-4 flex-wrap animate-fade-up-5">
+            <a href="#contact" class="group relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium
+                       bg-blue-main hover:bg-blue-dark text-white
+                       shadow-[0_0_20px_rgba(37,99,235,0.35)] hover:shadow-[0_0_32px_rgba(37,99,235,0.55)]
+                       transition-all duration-400 overflow-hidden">
+
+                <span class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700
+                             bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"></span>
+                <span>Contact Me</span>
+                <svg class="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 12L12 2M12 2H5M12 2V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+
+            <a href="#work" class="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium
+                       border border-border/50 hover:border-blue-glow/40 t-muted hover:text-blue-glow
+                       transition-all duration-400">
+                <span>View Work</span>
+                <svg class="size-3 opacity-60 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5"
+                    viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+        </div>
     </div>
 
     <div class="hide-mobile relative z-[2] flex justify-center items-center animate-fade-up-r">

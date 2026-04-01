@@ -278,10 +278,20 @@
     .contact-glow {
         background: radial-gradient(ellipse, rgba(37, 99, 235, .1), transparent 68%);
     }
+
+    .section-pad {
+        padding: 80px 64px;
+        position: relative;
+        z-index: 1;
+    }
 }
 
 @media (max-width: 920px) {
     .hide-mobile {
         display: none;
+    }
+
+    .section-pad {
+        padding: 60px 24px;
     }
 }
