@@ -1,7 +1,7 @@
 <section id="hero"
     class="min-h-screen section-pad section-pad-hero grid grid-cols-2 max-[920px]:grid-cols-1 items-center gap-20 overflow-hidden">
 
-    <div class="relative z-[2] animate-fade-up-1 max-w-[620px]">
+    <div class="relative z-[2] max-w-[620px] animate-fade-up-1">
 
         @if (isLoggedIn() && isEditing) {
         <div class="flex gap-2 mb-6 animate-fade-in">
@@ -79,7 +79,7 @@
             }
         </div>
 
-        <div class="flex items-center gap-4 flex-wrap animate-fade-up-5">
+        <div class="flex items-center gap-4 flex-wrap">
             <a href="#contact"
                 class="group relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium bg-blue-main text-white shadow-[0_0_20px_rgba(37,99,235,0.35)] transition-all">
                 <span>Contact Me</span>
@@ -93,11 +93,9 @@
 
     <div class="hide-mobile relative z-[2] flex justify-center items-center animate-fade-up-r">
         <div class="relative size-[320px] group">
-            <div
-                class="absolute inset-[-3px] rounded-full p-[1px] bg-gradient-to-b from-blue-glow/60 via-blue-dark to-blue-deep/30">
-            </div>
+            <div class="absolute inset-[-3px] rounded-full p-[1px] bg-gradient-to-b from-blue-glow/60 via-blue-dark to-blue-deep/30"></div>
             <div class="absolute inset-[3px] rounded-full overflow-hidden border border-border/50">
-
+                
                 <img [src]="(isEditing ? tempHeroData.profile_pic : heroData().profile_pic) || 'assets/placeholder.webp'"
                     class="w-full h-full object-cover" alt="Profile">
 

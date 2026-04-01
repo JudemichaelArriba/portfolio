@@ -23,41 +23,50 @@ export class HeroComponent implements OnInit {
   isLoggedIn = toSignal(this.auth.currentUser$.pipe(map(user => !!user)), { initialValue: false });
 
 
-  heroData = signal<Hero>({
+  private readonly FALLBACK_DATA: Hero = {
     id: undefined,
     name: 'Jude Michael T. Arriba',
     tagline: 'Full-Stack Developer · Mobile & Web',
     bio: 'I design and build clean, scalable applications...',
     profile_pic: "default-profile.jpeg",
-  });
+  };
+
+
+  heroData = signal<Hero>(this.getCachedHero());
 
   editingField = signal<string | null>(null);
   isEditing = false;
-
-
   tempHeroData: Hero = { ...this.heroData() };
 
   ngOnInit(): void {
     this.loadHero();
   }
 
+
+  private getCachedHero(): Hero {
+    const cached = localStorage.getItem('cached_hero');
+    return cached ? JSON.parse(cached) : this.FALLBACK_DATA;
+  }
+
   loadHero(): void {
     this.heroService.getHeroData().subscribe({
       next: (data) => {
-
         if (data && data.name) {
-          this.heroData.set(data);
-          this.tempHeroData = { ...data };
+
+          if (JSON.stringify(data) !== JSON.stringify(this.heroData())) {
+            this.heroData.set(data);
+            this.tempHeroData = { ...data };
+            localStorage.setItem('cached_hero', JSON.stringify(data));
+          }
         }
       },
       error: () => {
-        // console.warn('Database offline. Using default hero data.')
+
       }
     });
   }
 
   startEdit(field: string) {
-
     this.tempHeroData = { ...this.heroData() };
     this.editingField.set(field);
     this.isEditing = true;
@@ -72,12 +81,10 @@ export class HeroComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-
       if (file.size > 2 * 1024 * 1024) {
         this.dialog.error('File too large', 'Please select an image under 2MB.');
         return;
       }
-
       const reader = new FileReader();
       reader.onload = () => {
         this.tempHeroData.profile_pic = reader.result as string;
@@ -90,19 +97,17 @@ export class HeroComponent implements OnInit {
 
   saveChanges() {
     const modified = this.tempHeroData;
-
     if (!modified.name?.trim() || !modified.tagline?.trim() || !modified.bio?.trim()) {
       this.dialog.error('Validation Error', 'Fields cannot be empty.');
       return;
     }
 
-
     if (modified.id) {
       this.heroService.updateHero(modified.id, modified).subscribe({
         next: (res: any) => {
-
           const updated = res.data || res;
           this.heroData.set(updated);
+          localStorage.setItem('cached_hero', JSON.stringify(updated));
           this.cancelEdit();
           this.dialog.success('Success', 'Hero section updated!');
         },
