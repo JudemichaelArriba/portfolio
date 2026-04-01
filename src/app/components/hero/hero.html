@@ -2,6 +2,19 @@
     class="min-h-screen section-pad section-pad-hero grid grid-cols-2 max-[920px]:grid-cols-1 items-center gap-20 overflow-hidden">
 
     <div class="relative z-[2] animate-fade-up-1 max-w-[620px]">
+
+        @if (isLoggedIn()) {
+        <button (click)="openEditModal()"
+            class="mb-6 flex items-center gap-2 px-3 py-1.5 rounded-md border border-blue-main/30 bg-blue-main/5 text-blue-glow font-mono text-[10px] uppercase tracking-widest hover:bg-blue-main hover:text-white transition-all duration-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            Edit Hero Section
+        </button>
+        }
+
         <h1
             class="font-syne font-black leading-[.93] tracking-[-0.04em] mb-5 text-[clamp(3.2rem,5.2vw,5.8rem)] t-fg animate-fade-up-2">
             {{ heroData().name }}
@@ -16,19 +29,16 @@
         </p>
 
         <div class="flex items-center gap-4 flex-wrap animate-fade-up-5">
-            <a href="#contact" class="group relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium
-                       bg-blue-main hover:bg-blue-dark text-white
-                       shadow-[0_0_20px_rgba(37,99,235,0.35)] hover:shadow-[0_0_32px_rgba(37,99,235,0.55)]
-                       transition-all duration-400 overflow-hidden">
+            <a href="#contact"
+                class="group relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium bg-blue-main hover:bg-blue-dark text-white shadow-[0_0_20px_rgba(37,99,235,0.35)] hover:shadow-[0_0_32px_rgba(37,99,235,0.55)] transition-all duration-400 overflow-hidden">
                 <span>Contact Me</span>
                 <svg class="size-3.5" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2 12L12 2M12 2H5M12 2V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
             </a>
-            <a href="#work" class="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium
-                       border border-border/50 hover:border-blue-glow/40 t-muted hover:text-blue-glow
-                       transition-all duration-400">
+            <a href="#work"
+                class="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-mono text-[.82rem] tracking-[.06em] uppercase font-medium border border-border/50 hover:border-blue-glow/40 t-muted hover:text-blue-glow transition-all duration-400">
                 <span>View Work</span>
             </a>
         </div>
@@ -41,10 +51,8 @@
                 class="absolute inset-[-3px] rounded-full p-[1px] bg-gradient-to-b from-blue-glow/60 via-blue-dark to-blue-deep/30 shadow-[0_0_25px_rgba(37,99,235,0.2)]">
                 <div class="w-full h-full rounded-full bg-ink"></div>
             </div>
-
             <div class="absolute inset-[3px] rounded-full overflow-hidden border border-border/50 shadow-[inset_0_4px_12px_rgba(0,0,0,0.5)]"
                 style="background:linear-gradient(160deg,#0c1445 0%,#1e3a8a 55%,#0f172a 100%)">
-
                 @if (heroData().profile_pic) {
                 <img [src]="heroData().profile_pic" class="w-full h-full object-cover" alt="Profile">
                 }

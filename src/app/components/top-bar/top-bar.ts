@@ -1,10 +1,13 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, ChangeDetectorRef, inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription, filter } from 'rxjs';
+import { Subscription, filter, map } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 import { RouterLink } from '@angular/router';
-type Theme = 'dark' | 'light';
+import { AuthServices } from '../../services/auth.services'; // 1. Import Auth
+import { toSignal } from '@angular/core/rxjs-interop'; // 2. Import toSignal
+import { DialogService } from '../../services/dialog.service'; // 3. Import Dialog
 
+type Theme = 'dark' | 'light';
 
 @Component({
   selector: 'app-top-bar',
@@ -13,17 +16,27 @@ type Theme = 'dark' | 'light';
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.css',
 })
-
-
 export class TopBar implements OnInit, AfterViewInit, OnDestroy {
   activeSection = 'hero';
   themeMode: Theme = 'dark';
+  
+  // 4. Inject Services
+  private auth = inject(AuthServices);
+  private dialog = inject(DialogService);
+  
+  // 5. Create a Signal for the Auth state
+  isLoggedIn = toSignal(
+    this.auth.currentUser$.pipe(map(user => !!user)), 
+    { initialValue: !!this.auth.token }
+  );
+
   private observer: IntersectionObserver | null = null;
   private routerSub?: Subscription;
   private scrollCleanup?: () => void;
   private scrollRaf = 0;
   private sections: HTMLElement[] = [];
   private initAttempts = 0;
+
   constructor(
     private theme: ThemeService,
     private router: Router,
@@ -35,10 +48,26 @@ export class TopBar implements OnInit, AfterViewInit, OnDestroy {
     this.themeMode = this.theme.initTheme();
   }
 
+  // 6. Production Logout Logic with Dialog
+  handleLogout(): void {
+    this.dialog.confirm(
+      'Sign Out',
+      'Are you sure you want to log out of the admin portal?',
+      () => {
+        this.auth.logout();
+        this.router.navigate(['/']); // Go home after logout
+      },
+      undefined,
+      'Logout',
+      'Stay'
+    );
+  }
+
   toggleTheme(): void {
     this.themeMode = this.theme.toggleTheme();
   }
 
+  // ... rest of your existing intersection observer code remains unchanged ...
   ngAfterViewInit(): void {
     setTimeout(() => this.setupObserver(), 0);
     this.routerSub = this.router.events
@@ -56,9 +85,7 @@ export class TopBar implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private setupObserver(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    if (this.observer) this.observer.disconnect();
     if (this.scrollCleanup) {
       this.scrollCleanup();
       this.scrollCleanup = undefined;
@@ -81,19 +108,15 @@ export class TopBar implements OnInit, AfterViewInit, OnDestroy {
 
     this.sections.forEach(section => this.observer!.observe(section));
 
-    // Fallback scroll spy (covers cases where IntersectionObserver doesn't fire)
     this.zone.runOutsideAngular(() => {
       const update = () => this.updateActiveSection();
-
       const onScroll = () => {
         if (this.scrollRaf) cancelAnimationFrame(this.scrollRaf);
         this.scrollRaf = requestAnimationFrame(update);
       };
-
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
       onScroll();
-
       this.scrollCleanup = () => {
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('resize', onScroll);
@@ -119,5 +142,4 @@ export class TopBar implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
-
 }

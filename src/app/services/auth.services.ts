@@ -53,7 +53,13 @@ export class AuthServices {
         return throwError(() => error);
     }
 
+
     logout(): void {
+
+        this.http.post(`${environment.apiUrl}/logout`, {}).subscribe({
+            error: (err) => console.error('Backend logout failed', err)
+        });
+
         localStorage.removeItem(this.tokenKey);
         this.currentUserSubject.next(null);
     }
