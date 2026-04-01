@@ -1,0 +1,60 @@
+<div class="min-h-screen bg-ink flex items-center justify-center font-sans p-6 relative overflow-hidden">
+
+    <div class="absolute top-0 -left-20 w-96 h-96 bg-blue-main/10 rounded-full blur-[120px] animate-orb-a"></div>
+    <div class="absolute bottom-0 -right-20 w-96 h-96 bg-teal/10 rounded-full blur-[120px] animate-orb-b"></div>
+
+    <div class="w-full max-w-md z-10">
+        <div class="text-center mb-10 animate-fade-up-1">
+            <h1 class="font-syne text-4xl font-bold text-white tracking-tight">
+                Admin <span class="text-blue-light">Portal</span>
+            </h1>
+            <p class="text-slate-400 mt-2 font-mono text-sm uppercase tracking-widest">Authorized Access Only</p>
+        </div>
+
+        <div class="bg-ink-soft border border-white/10 p-8 rounded-2xl shadow-2xl backdrop-blur-sm animate-fade-up-2">
+            <form action="#" method="POST" class="space-y-6">
+
+                <div>
+                    <label class="block text-slate-300 text-sm font-medium mb-2 ml-1">Identity</label>
+                    <input type="text" placeholder="Username or Email"
+                        class="w-full bg-ink border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-main focus:ring-1 focus:ring-blue-main transition-all duration-400 placeholder:text-slate-600" />
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2 ml-1">
+                        <label class="block text-slate-300 text-sm font-medium">Secret Key</label>
+                    </div>
+                    <input type="password" placeholder="••••••••"
+                        class="w-full bg-ink border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-main focus:ring-1 focus:ring-blue-main transition-all duration-400 placeholder:text-slate-600" />
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-blue-main hover:bg-blue-dark text-white font-syne font-bold py-4 rounded-xl transition-all duration-400 shadow-lg shadow-blue-main/20 active:scale-[0.98] flex items-center justify-center gap-2 group">
+                    Enter Dashboard
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                <a href="/" class="text-slate-500 hover:text-teal text-sm font-mono transition-colors duration-400">
+                    ← Return to Portfolio
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-8 flex items-center justify-center gap-3 animate-fade-up-4">
+            <div class="relative flex h-2 w-2">
+                <span
+                    class="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-teal opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-teal"></span>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500 uppercase tracking-tighter">System Online: MySQL Database
+                Connected</span>
+        </div>
+    </div>
+</div>

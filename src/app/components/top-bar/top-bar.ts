@@ -2,13 +2,14 @@ import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, ChangeDetectorRef 
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { ThemeService } from '../../services/theme.service/theme.service';
+import { RouterLink } from '@angular/router';
 type Theme = 'dark' | 'light';
 
 
 @Component({
   selector: 'app-top-bar',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.css',
 })
