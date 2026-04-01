@@ -4,7 +4,7 @@ import { environment } from '../../environements/environment';
 import { User, LoginResponse } from '../models/user.model';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { DialogService } from '../services/dialog.service';
+import { DialogService } from './dialog.service';
 import { map } from 'rxjs/operators'; // Add this import
 
 @Injectable({ providedIn: 'root' })
@@ -26,19 +26,6 @@ export class AuthServices {
     get token(): string | null {
         return localStorage.getItem(this.tokenKey);
     }
-
-    // login(email: string, password: string): Observable<User> {
-    //     return this.http.post<{ user: User; token: string }>(
-    //         `${environment.apiUrl}/login`,
-    //         { email, password }
-    //     ).pipe(
-    //         tap(res => {
-    //             localStorage.setItem(this.tokenKey, res.token);
-    //             this.currentUserSubject.next({ ...res.user, token: res.token });
-    //         }),
-    //         catchError(err => this.handleError(err))
-    //     );
-    // }
 
 
     login(email: string, password: string): Observable<User> {
