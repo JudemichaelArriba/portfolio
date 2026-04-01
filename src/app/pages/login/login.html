@@ -1,0 +1,113 @@
+<div class="h-screen flex flex-col items-center justify-center font-sans px-4 relative overflow-hidden transition-colors duration-500"
+    [attr.data-theme]="currentTheme" [class]="currentTheme === 'dark' ? 'bg-ink' : 'bg-slate-50'">
+
+    <div class="absolute top-0 -left-20 w-72 h-72 rounded-full blur-[100px] animate-orb-a transition-colors duration-500"
+        [class]="currentTheme === 'dark' ? 'bg-blue-main/10' : 'bg-blue-main/20'"></div>
+    <div class="absolute bottom-0 -right-20 w-72 h-72 rounded-full blur-[100px] animate-orb-b transition-colors duration-500"
+        [class]="currentTheme === 'dark' ? 'bg-teal/10' : 'bg-teal/20'"></div>
+
+    <button (click)="toggleTheme()"
+        class="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-mono uppercase tracking-wider transition-all duration-400 cursor-pointer"
+        [class]="currentTheme === 'dark'
+          ? 'bg-ink-soft border-white/10 text-slate-400 hover:border-blue-main hover:text-white'
+          : 'bg-white border-slate-200 text-slate-500 hover:border-blue-main hover:text-blue-main shadow-sm'">
+        @if (currentTheme === 'dark') {
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z" />
+        </svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+        </svg>
+        }
+        {{ currentTheme === 'dark' ? 'Light' : 'Dark' }}
+    </button>
+
+    <div class="w-full max-w-sm z-10">
+        <div class="text-center mb-6 animate-fade-up-1">
+            <h1 class="font-syne text-3xl font-bold tracking-tight transition-colors duration-400"
+                [class]="currentTheme === 'dark' ? 'text-white' : 'text-slate-900'">
+                Admin <span class="text-blue-light">Portal</span>
+            </h1>
+            <p class="mt-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors duration-400"
+                [class]="currentTheme === 'dark' ? 'text-slate-400' : 'text-slate-500'">
+                Authorized Access Only
+            </p>
+        </div>
+
+        <div class="p-6 rounded-2xl shadow-xl backdrop-blur-sm animate-fade-up-2 border transition-all duration-400"
+            [class]="currentTheme === 'dark'
+              ? 'bg-ink-soft border-white/10'
+              : 'bg-white border-slate-200 shadow-slate-200/80'">
+
+            <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-4">
+
+                <div>
+                    <label class="block text-xs font-medium mb-1.5 ml-0.5 transition-colors duration-400"
+                        [class]="currentTheme === 'dark' ? 'text-slate-300' : 'text-slate-600'">
+                        Identity
+                    </label>
+                    <input type="email" formControlName="email" placeholder="Username or Email" required
+                        class="w-full rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none focus:border-blue-main focus:ring-1 focus:ring-blue-main transition-all duration-400"
+                        [class]="currentTheme === 'dark'
+                          ? 'bg-ink border-white/10 text-white placeholder:text-slate-600'
+                          : 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400'" />
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1.5 ml-0.5">
+                        <label class="block text-xs font-medium transition-colors duration-400"
+                            [class]="currentTheme === 'dark' ? 'text-slate-300' : 'text-slate-600'">
+                            Secret Key
+                        </label>
+                        <a href="#" class="text-[11px] font-mono transition-colors duration-400"
+                            [class]="currentTheme === 'dark' ? 'text-slate-500 hover:text-teal' : 'text-slate-400 hover:text-blue-main'">
+                            Forgot?
+                        </a>
+                    </div>
+                    <input type="password" formControlName="password" placeholder="••••••••" required
+                        class="w-full rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none focus:border-blue-main focus:ring-1 focus:ring-blue-main transition-all duration-400"
+                        [class]="currentTheme === 'dark'
+                          ? 'bg-ink border-white/10 text-white placeholder:text-slate-600'
+                          : 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400'" />
+                </div>
+
+                <button type="submit" [disabled]="isLoggingIn"
+                    class="w-full bg-blue-main hover:bg-blue-dark text-white font-syne font-bold py-3 rounded-xl transition-all duration-400 shadow-lg shadow-blue-main/20 active:scale-[0.98] flex items-center justify-center gap-2 group text-sm mt-1 disabled:opacity-70 disabled:cursor-not-allowed">
+
+                    @if (isLoggingIn) {
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <span>Authenticating...</span>
+                    } @else {
+                    <span>Login</span>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    }
+                </button>
+            </form>
+
+            <div class="mt-5 pt-4 text-center border-t transition-colors duration-400"
+                [class]="currentTheme === 'dark' ? 'border-white/5' : 'border-slate-100'">
+                <a href="/" class="text-xs font-mono transition-colors duration-400"
+                    [class]="currentTheme === 'dark' ? 'text-slate-500 hover:text-teal' : 'text-slate-400 hover:text-blue-main'">
+                    ← Return to Portfolio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
