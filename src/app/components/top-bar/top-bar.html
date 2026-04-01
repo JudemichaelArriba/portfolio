@@ -1,20 +1,19 @@
 <nav
-    class="fixed top-0 left-0 w-full z-[100] px-16 py-[18px] flex justify-between items-center backdrop-blur-[24px] transition-[background,border-color] duration-400">
-    <a href="#hero" class="font-syne font-black text-[1.15rem] tracking-tight t-fg no-underline">
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] px-8 py-3 flex justify-between items-center backdrop-blur-[24px] transition-[background,border-color] duration-400 rounded-full border border-black/10 dark:border-white/10 bg-white/60 dark:bg-ink-soft/60 shadow-lg shadow-black/10 dark:shadow-black/20 w-[90%] max-w-5xl">
+    <a href="#hero" class="font-syne font-black text-[1.15rem] tracking-tight t-fg no-underline shrink-0">
         Arriba<span class="text-blue-glow">.</span>com
     </a>
-    <ul class="hide-mobile flex gap-9 list-none items-center">
+    <ul class="hide-mobile flex list-none items-center gap-1">
         <li>
             <a href="#about"
-                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
-                [class.text-blue-glow]="activeSection === 'about'"
-                [class.t-slate]="activeSection !== 'about'">
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'about'" [class.t-slate]="activeSection !== 'about'">
                 About
             </a>
         </li>
         <li>
             <a href="#experience"
-                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow"
                 [class.text-blue-glow]="activeSection === 'experience'"
                 [class.t-slate]="activeSection !== 'experience'">
                 Experience
@@ -22,34 +21,43 @@
         </li>
         <li>
             <a href="#skills"
-                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
-                [class.text-blue-glow]="activeSection === 'skills'"
-                [class.t-slate]="activeSection !== 'skills'">
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'skills'" [class.t-slate]="activeSection !== 'skills'">
                 Stack
             </a>
         </li>
         <li>
             <a href="#projects"
-                class="font-mono text-[.76rem] uppercase tracking-widest no-underline transition-colors duration-200 hover:text-blue-glow"
-                [class.text-blue-glow]="activeSection === 'projects'"
-                [class.t-slate]="activeSection !== 'projects'">
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'projects'" [class.t-slate]="activeSection !== 'projects'">
                 Projects
             </a>
         </li>
         <li>
-            <a href="#contact" class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-5 py-2 rounded transition-colors duration-200
-          text-blue-main dark:text-blue-glow hover:text-blue-glow">
+            <a href="#contact"
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow t-slate">
                 Contact
             </a>
         </li>
-        <li>
+
+        <li class="ml-3 h-5 w-px bg-white/15 shrink-0"></li>
+
+        <li class="ml-3">
+            <a href="#login" class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-5 py-2 rounded-full border transition-all duration-200
+                       border-blue-main text-blue-main hover:bg-blue-main/10 hover:border-blue-glow hover:text-blue-glow
+                       dark:border-blue-glow dark:text-blue-glow dark:hover:bg-blue-glow/10">
+                Login
+            </a>
+        </li>
+
+        <li class="ml-2">
             <button (click)="toggleTheme()" aria-label="Toggle theme"
-                class="w-[42px] h-[42px] rounded-[10px] t-card flex items-center justify-center t-slate relative overflow-hidden transition-all duration-200 hover:border-blue-main hover:text-blue-glow hover:bg-blue-main/10"
+                class="w-[38px] h-[38px] rounded-full t-card flex items-center justify-center t-slate relative overflow-hidden transition-all duration-200 hover:border-blue-main hover:text-blue-glow hover:bg-blue-main/10"
                 style="border:1px solid var(--border)">
                 <svg class="absolute transition-all duration-300" [class.opacity-100]="themeMode === 'dark'"
                     [class.scale-100]="themeMode === 'dark'" [class.rotate-0]="themeMode === 'dark'"
                     [class.opacity-0]="themeMode !== 'dark'" [class.scale-50]="themeMode !== 'dark'"
-                    [class.-rotate-90]="themeMode !== 'dark'" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    [class.-rotate-90]="themeMode !== 'dark'" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5" />
                     <line x1="12" y1="1" x2="12" y2="3" />
@@ -64,7 +72,7 @@
                 <svg class="absolute transition-all duration-300" [class.opacity-0]="themeMode === 'dark'"
                     [class.scale-50]="themeMode === 'dark'" [class.rotate-90]="themeMode === 'dark'"
                     [class.opacity-100]="themeMode !== 'dark'" [class.scale-100]="themeMode !== 'dark'"
-                    [class.rotate-0]="themeMode !== 'dark'" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                    [class.rotate-0]="themeMode !== 'dark'" width="15" height="15" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
