@@ -284,6 +284,10 @@
         position: relative;
         z-index: 1;
     }
+
+    .section-pad-hero {
+        padding-top: 120px;
+    }
 }
 
 @media (max-width: 920px) {
@@ -293,5 +297,9 @@
 
     .section-pad {
         padding: 60px 24px;
+    }
+
+    .section-pad-hero {
+        padding-top: 96px;
     }
 }

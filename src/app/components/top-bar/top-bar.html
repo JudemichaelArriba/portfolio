@@ -1,6 +1,7 @@
 <nav
     class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] px-8 py-3 flex justify-between items-center backdrop-blur-[24px] transition-[background,border-color] duration-400 rounded-full border border-black/10 dark:border-white/10 bg-white/60 dark:bg-ink-soft/60 shadow-lg shadow-black/10 dark:shadow-black/20 w-[90%] max-w-5xl">
-    <a href="#hero" class="font-syne font-black text-[1.15rem] tracking-tight t-fg no-underline shrink-0">
+    <a href="#hero"
+        class="font-syne font-black text-[1.15rem] tracking-tight no-underline shrink-0 text-blue-deep dark:text-white">
         Arriba<span class="text-blue-glow">.</span>com
     </a>
     <ul class="hide-mobile flex list-none items-center gap-1">
@@ -35,9 +36,11 @@
         </li>
         <li>
             <a href="#contact"
-                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow t-slate">
+                class="font-mono text-[.76rem] uppercase tracking-widest no-underline px-4 py-2 rounded-full transition-colors duration-200 hover:text-blue-glow"
+                [class.text-blue-glow]="activeSection === 'contact'" [class.t-slate]="activeSection !== 'contact'">
                 Contact
             </a>
+
         </li>
 
         <li class="ml-3 h-5 w-px bg-white/15 shrink-0"></li>
