@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
-import { ThemeService } from '../../services/theme.service/theme.service';
+import { ThemeService } from '../../services/theme.service';
 import { RouterLink } from '@angular/router';
 type Theme = 'dark' | 'light';
 

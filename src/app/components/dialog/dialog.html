@@ -1,0 +1,96 @@
+@if (visible) {
+  <div
+    class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+  >
+    <div
+      class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300"
+      [class.opacity-100]="animating"
+      [class.opacity-0]="!animating"
+    ></div>
+
+    <div
+      class="relative w-full max-w-sm bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60
+             transition-all duration-300"
+      style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);"
+      [class.opacity-100]="animating"
+      [class.opacity-0]="!animating"
+      [class.scale-100]="animating"
+      [class.scale-90]="!animating"
+      [class.translate-y-0]="animating"
+      [class.translate-y-8]="!animating"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'dialog-title'"
+      [attr.aria-describedby]="'dialog-message'"
+    >
+      <div class="px-8 pt-8 pb-7 flex flex-col items-center text-center">
+
+        <div
+          class="relative mb-5 flex items-center justify-center w-16 h-16 rounded-full"
+          [ngStyle]="iconRingStyle()"
+        >
+          <span
+            class="absolute inset-0 rounded-full opacity-40 animate-ping"
+            [ngStyle]="pingStyle()"
+            style="animation-duration: 1.8s;"
+          ></span>
+
+          <svg
+            class="w-7 h-7 text-white relative z-10"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path [attr.d]="iconConfig.svg" />
+          </svg>
+        </div>
+
+        <h2
+          id="dialog-title"
+          class="text-lg font-bold text-gray-800 mb-2 tracking-tight"
+        >
+          {{ config?.title }}
+        </h2>
+
+        <p
+          id="dialog-message"
+          class="text-sm text-gray-500 leading-relaxed mb-7"
+        >
+          {{ config?.message }}
+        </p>
+
+        <div class="flex gap-3 w-full">
+          @if (config?.type === 'confirm') {
+            <button
+              type="button"
+              class="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-600 bg-gray-100
+                     hover:bg-gray-200 active:scale-95 transition-all duration-200
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+              (click)="onCancel()"
+            >
+              {{ config?.cancelLabel || 'Cancel' }}
+            </button>
+          }
+
+          <button
+            type="button"
+            class="flex-1 py-3 rounded-xl text-sm font-bold text-white
+                   hover:-translate-y-0.5 active:translate-y-0 active:scale-95
+                   transition-all duration-200 focus:outline-none
+                   focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-400"
+            [ngStyle]="confirmBtnStyle()"
+            (click)="onConfirm()"
+          >
+            {{ config?.confirmLabel || 'OK' }}
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+}
