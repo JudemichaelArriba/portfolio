@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExperienceService } from '../../services/experience.service';
 import { Experience } from '../../models/experience.model';
@@ -19,39 +19,16 @@ export class ExperienceComponent implements OnInit {
   private expService = inject(ExperienceService);
   private auth = inject(AuthServices);
   private dialog = inject(DialogService);
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
 
   isLoggedIn = toSignal(this.auth.currentUser$.pipe(map(user => !!user)), { initialValue: false });
 
+  private experienceList = signal<Experience[]>([]);
 
-  experiences = signal<Experience[]>([
-    {
-      id: 3,
-      title: "BS Information System",
-      company: "Aces Tagum Collage Inc.",
-      badge_label: "1st Year",
-      date_range: "2023 - 2024",
-      description: "Studied core fundamentals of BSIT including programming logic, data structures, and problem solving...",
-      sort_order: 1
-    },
-    {
-      id: 4,
-      title: "BS Information System",
-      company: "Aces Tagum Collage Inc.",
-      badge_label: "2nd Year",
-      date_range: "2024 - 2025",
-      description: "Deepened knowledge in object-oriented programming, database management...",
-      sort_order: 2
-    },
-    {
-      id: 5,
-      title: "BS Information System",
-      company: "Aces Tagum Collage Inc.",
-      badge_label: "3rd Year",
-      date_range: "2025 - Present",
-      description: "Leading the development of the capstone project as the main developer...",
-      sort_order: 3
-    }
-  ]);
+  experiences = computed(() => {
+    return [...this.experienceList()].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  });
 
   isSaving = signal(false);
   showModal = signal(false);
@@ -59,24 +36,41 @@ export class ExperienceComponent implements OnInit {
   selectedExperience = signal<Partial<Experience>>({});
 
   ngOnInit() {
-    this.fetchExperiences();
+    const cached = localStorage.getItem('cached_experiences');
+    if (cached) {
+      try {
+        this.experienceList.set(JSON.parse(cached));
+      } catch (e) {
+        console.error("Cache error", e);
+      }
+    }
+    this.loadExperiences();
   }
 
-  fetchExperiences() {
+  loadExperiences() {
     this.expService.getExperiences().subscribe({
       next: (data) => {
-        if (data && data.length > 0) this.experiences.set(data);
-      },
-      error: () => {
-        console.log("Using default local data.")
+        if (Array.isArray(data)) {
+          this.experienceList.set(data);
+          this.saveCache(data);
+        }
       }
-        
     });
   }
 
-  openAddModal() {
+  private saveCache(data: Experience[]) {
+    localStorage.setItem('cached_experiences', JSON.stringify(data));
+  }
 
-    this.selectedExperience.set({ sort_order: this.experiences().length + 1 });
+  openAddModal() {
+    const nextOrder = this.experienceList().length > 0
+      ? Math.max(...this.experienceList().map(e => e.sort_order ?? 0)) + 1
+      : 1;
+
+    this.selectedExperience.set({
+      sort_order: nextOrder,
+      title: '', company: '', description: '', badge_label: '', date_range: ''
+    });
     this.modalMode.set('add');
     this.showModal.set(true);
   }
@@ -89,15 +83,38 @@ export class ExperienceComponent implements OnInit {
 
   handleSave(data: Experience) {
     this.isSaving.set(true);
-    const request = this.modalMode() === 'add'
+    const isAdd = this.modalMode() === 'add';
+
+    const request = isAdd
       ? this.expService.createExperience(data)
       : this.expService.updateExperience(data.id!, data);
 
     request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
-      next: () => {
-        this.fetchExperiences();
-        this.showModal.set(false);
-        this.dialog.success('Success', 'Experience updated.');
+      next: (responseItem: Experience) => {
+
+        this.zone.run(() => {
+          this.experienceList.update(old => {
+            if (isAdd) {
+
+              const newItem = { ...responseItem, id: responseItem.id ?? Date.now() };
+              return [...old, newItem];
+            } else {
+              return old.map(item => item.id === responseItem.id ? responseItem : item);
+            }
+          });
+
+          this.saveCache(this.experienceList());
+          this.showModal.set(false);
+
+          this.cdr.markForCheck();
+          this.cdr.detectChanges();
+        });
+
+        this.dialog.success('Success', `Experience saved!`);
+      },
+      error: (err) => {
+
+        this.dialog.error('Error', 'Save failed.');
       }
     });
   }
