@@ -1,4 +1,7 @@
-import { Component, OnInit, inject, signal, computed, ChangeDetectorRef, NgZone } from '@angular/core';
+import {
+  Component, OnInit, AfterViewInit, OnDestroy,
+  inject, signal, computed, ChangeDetectorRef, NgZone, ElementRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExperienceService } from '../../services/experience.service';
 import { Experience } from '../../models/experience.model';
@@ -15,25 +18,28 @@ import { ExperienceModal } from '../experience-modal/experience-modal';
   templateUrl: './experience.html',
   styleUrl: './experience.css',
 })
-export class ExperienceComponent implements OnInit {
+export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
   private expService = inject(ExperienceService);
   private auth = inject(AuthServices);
   private dialog = inject(DialogService);
   private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
+  private el = inject(ElementRef);
 
   isLoggedIn = toSignal(this.auth.currentUser$.pipe(map(user => !!user)), { initialValue: false });
 
   private experienceList = signal<Experience[]>([]);
 
-  experiences = computed(() => {
-    return [...this.experienceList()].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
-  });
+  experiences = computed(() =>
+    [...this.experienceList()].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+  );
 
   isSaving = signal(false);
   showModal = signal(false);
   modalMode = signal<'add' | 'edit'>('add');
   selectedExperience = signal<Partial<Experience>>({});
+
+  private observer: IntersectionObserver | null = null;
 
   ngOnInit() {
     const cached = localStorage.getItem('cached_experiences');
@@ -41,10 +47,37 @@ export class ExperienceComponent implements OnInit {
       try {
         this.experienceList.set(JSON.parse(cached));
       } catch (e) {
-        console.error("Cache error", e);
+
       }
     }
     this.loadExperiences();
+  }
+
+  ngAfterViewInit() {
+    this.zone.runOutsideAngular(() => {
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('tl-vis');
+              this.observer?.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+      );
+
+      this.observeItems();
+    });
+  }
+
+  ngOnDestroy() {
+    this.observer?.disconnect();
+  }
+
+  private observeItems() {
+    const items = this.el.nativeElement.querySelectorAll('.tl-item:not(.tl-vis)');
+    items.forEach((item: Element) => this.observer?.observe(item));
   }
 
   loadExperiences() {
@@ -53,6 +86,7 @@ export class ExperienceComponent implements OnInit {
         if (Array.isArray(data)) {
           this.experienceList.set(data);
           this.saveCache(data);
+          setTimeout(() => this.observeItems(), 60);
         }
       }
     });
@@ -91,11 +125,9 @@ export class ExperienceComponent implements OnInit {
 
     request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
       next: (responseItem: Experience) => {
-
         this.zone.run(() => {
           this.experienceList.update(old => {
             if (isAdd) {
-
               const newItem = { ...responseItem, id: responseItem.id ?? Date.now() };
               return [...old, newItem];
             } else {
@@ -105,15 +137,16 @@ export class ExperienceComponent implements OnInit {
 
           this.saveCache(this.experienceList());
           this.showModal.set(false);
-
-          this.cdr.markForCheck();
           this.cdr.detectChanges();
+
+          if (isAdd) {
+            setTimeout(() => this.observeItems(), 60);
+          }
         });
 
-        this.dialog.success('Success', `Experience saved!`);
+        this.dialog.success('Success', 'Experience saved!');
       },
-      error: (err) => {
-
+      error: () => {
         this.dialog.error('Error', 'Save failed.');
       }
     });

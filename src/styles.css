@@ -128,20 +128,16 @@
         transition-delay: .36s;
     }
 
-    /* Change this in your styles.css / global styles */
     .tl-item {
-        opacity: 1;
-        /* Changed from 0 to 1 */
-        transform: none;
-        /* Changed to none */
-        transition: opacity .65s ease, transform .65s ease;
-    }
-
-    /* .tl-item {
         opacity: 0;
         transform: translateX(-18px);
         transition: opacity .65s ease, transform .65s ease;
-    } */
+    }
+
+    .tl-item.tl-vis {
+        opacity: 1;
+        transform: translateX(0);
+    }
 
     .tl-item.tl-vis {
         opacity: 1;
