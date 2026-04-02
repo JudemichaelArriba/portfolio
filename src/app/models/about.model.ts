@@ -12,4 +12,5 @@ export interface About {
     status: string;
     created_at?: string;
     updated_at?: string;
+    [key: string]: any;
 }
