@@ -24,6 +24,7 @@ export class ExperienceModal {
   }
 
   handleClose() {
+    if (this.isSaving) return;
     this.isClosing.set(true);
 
     setTimeout(() => {
