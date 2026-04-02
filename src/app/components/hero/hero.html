@@ -5,13 +5,26 @@
 
         @if (isLoggedIn() && isEditing) {
         <div class="flex gap-2 mb-6 animate-fade-in">
-            <button (click)="cancelEdit()"
-                class="px-3 py-1.5 rounded-md border border-red-500/30 bg-red-500/5 text-red-400 font-mono text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+            <button (click)="cancelEdit()" [disabled]="isSaving()"
+                class="px-3 py-1.5 rounded-md border border-red-500/30 bg-red-500/5 text-red-400 font-mono text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                 Cancel
             </button>
-            <button (click)="saveChanges()"
-                class="px-3 py-1.5 rounded-md border border-green-500/30 bg-green-500/10 text-green-400 font-mono text-[10px] uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all">
-                Save Changes
+
+            <button (click)="saveChanges()" [disabled]="isSaving()"
+                class="relative px-3 py-1.5 rounded-md border border-green-500/30 bg-green-500/10 text-green-400 font-mono text-[10px] uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all min-w-[120px] flex items-center justify-center disabled:opacity-70">
+
+                @if (isSaving()) {
+                <svg class="animate-spin h-3 w-3 mr-2" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                        fill="none"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <span>Saving...</span>
+                } @else {
+                <span>Save Changes</span>
+                }
             </button>
         </div>
         }
@@ -32,7 +45,7 @@
             </button>
             }
             } @else {
-            <input [(ngModel)]="tempHeroData.name" aria-label="Full Name" placeholder="Full Name"
+            <input [(ngModel)]="tempHeroData.name" [disabled]="isSaving()" placeholder="Full Name"
                 class="w-full bg-transparent border-b border-blue-main font-syne font-black text-[clamp(2rem,4vw,4rem)] t-fg outline-none">
             }
         </div>
@@ -53,7 +66,7 @@
             </button>
             }
             } @else {
-            <input [(ngModel)]="tempHeroData.tagline" aria-label="Job Tagline" placeholder="Job Tagline"
+            <input [(ngModel)]="tempHeroData.tagline" [disabled]="isSaving()" placeholder="Job Tagline"
                 class="w-full bg-transparent border-b border-blue-main font-mono text-[.88rem] t-slate outline-none uppercase">
             }
         </div>
@@ -74,7 +87,7 @@
             </button>
             }
             } @else {
-            <textarea [(ngModel)]="tempHeroData.bio" rows="3" aria-label="Biography" placeholder="Bio"
+            <textarea [(ngModel)]="tempHeroData.bio" [disabled]="isSaving()" rows="3" placeholder="Bio"
                 class="w-full bg-transparent border border-blue-main/20 p-2 text-base t-muted outline-none rounded"></textarea>
             }
         </div>
@@ -93,13 +106,14 @@
 
     <div class="hide-mobile relative z-[2] flex justify-center items-center animate-fade-up-r">
         <div class="relative size-[320px] group">
-            <div class="absolute inset-[-3px] rounded-full p-[1px] bg-gradient-to-b from-blue-glow/60 via-blue-dark to-blue-deep/30"></div>
+            <div
+                class="absolute inset-[-3px] rounded-full p-[1px] bg-gradient-to-b from-blue-glow/60 via-blue-dark to-blue-deep/30">
+            </div>
             <div class="absolute inset-[3px] rounded-full overflow-hidden border border-border/50">
-                
                 <img [src]="(isEditing ? tempHeroData.profile_pic : heroData().profile_pic) || 'assets/placeholder.webp'"
                     class="w-full h-full object-cover" alt="Profile">
 
-                @if (isLoggedIn()) {
+                @if (isLoggedIn() && !isSaving()) {
                 <label
                     class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="text-[10px] text-white font-mono uppercase">Change Photo</span>

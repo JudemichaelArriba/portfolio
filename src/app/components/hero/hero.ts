@@ -6,7 +6,7 @@ import { Hero } from '../../models/hero.model';
 import { AuthServices } from '../../services/auth.services';
 import { DialogService } from '../../services/dialog.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { map, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-hero',
@@ -22,7 +22,6 @@ export class HeroComponent implements OnInit {
 
   isLoggedIn = toSignal(this.auth.currentUser$.pipe(map(user => !!user)), { initialValue: false });
 
-
   private readonly FALLBACK_DATA: Hero = {
     id: undefined,
     name: 'Jude Michael T. Arriba',
@@ -31,17 +30,19 @@ export class HeroComponent implements OnInit {
     profile_pic: "default-profile.jpeg",
   };
 
-
   heroData = signal<Hero>(this.getCachedHero());
-
+  isSaving = signal<boolean>(false);
   editingField = signal<string | null>(null);
-  isEditing = false;
+
+  get isEditing(): boolean {
+    return this.editingField() !== null;
+  }
+
   tempHeroData: Hero = { ...this.heroData() };
 
   ngOnInit(): void {
     this.loadHero();
   }
-
 
   private getCachedHero(): Hero {
     const cached = localStorage.getItem('cached_hero');
@@ -52,16 +53,12 @@ export class HeroComponent implements OnInit {
     this.heroService.getHeroData().subscribe({
       next: (data) => {
         if (data && data.name) {
-
           if (JSON.stringify(data) !== JSON.stringify(this.heroData())) {
             this.heroData.set(data);
             this.tempHeroData = { ...data };
             localStorage.setItem('cached_hero', JSON.stringify(data));
           }
         }
-      },
-      error: () => {
-
       }
     });
   }
@@ -69,12 +66,11 @@ export class HeroComponent implements OnInit {
   startEdit(field: string) {
     this.tempHeroData = { ...this.heroData() };
     this.editingField.set(field);
-    this.isEditing = true;
   }
 
   cancelEdit() {
+    if (this.isSaving()) return;
     this.editingField.set(null);
-    this.isEditing = false;
     this.tempHeroData = { ...this.heroData() };
   }
 
@@ -89,7 +85,6 @@ export class HeroComponent implements OnInit {
       reader.onload = () => {
         this.tempHeroData.profile_pic = reader.result as string;
         this.editingField.set('image');
-        this.isEditing = true;
       };
       reader.readAsDataURL(file);
     }
@@ -97,22 +92,47 @@ export class HeroComponent implements OnInit {
 
   saveChanges() {
     const modified = this.tempHeroData;
+    const current = this.heroData();
+
     if (!modified.name?.trim() || !modified.tagline?.trim() || !modified.bio?.trim()) {
       this.dialog.error('Validation Error', 'Fields cannot be empty.');
       return;
     }
 
-    if (modified.id) {
-      this.heroService.updateHero(modified.id, modified).subscribe({
+    if (JSON.stringify(modified) === JSON.stringify(current)) {
+      this.dialog.alert('No Changes', 'You haven\'t made any changes to save.');
+      return;
+    }
+
+    this.dialog.confirm(
+      'Confirm Changes',
+      'Do you really want to save these changes?',
+      () => {
+        if (modified.id) {
+          this.executeSave(modified);
+        } else {
+       
+          this.executeSave({ ...modified, id: this.heroData().id });
+        }
+      }
+    );
+  }
+
+  private executeSave(data: Hero) {
+    this.isSaving.set(true);
+
+    this.heroService.updateHero(data.id!, data)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
         next: (res: any) => {
           const updated = res.data || res;
           this.heroData.set(updated);
           localStorage.setItem('cached_hero', JSON.stringify(updated));
-          this.cancelEdit();
+
+          this.editingField.set(null);
           this.dialog.success('Success', 'Hero section updated!');
         },
         error: () => this.dialog.error('Error', 'Failed to update hero.')
       });
-    }
   }
 }
