@@ -1,7 +1,19 @@
 <section id="experience" class="section-pad">
-    <div
-        class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] mb-3 flex items-center gap-3 section-label">
-        Experience</div>
+    <div class="flex justify-between items-end mb-3">
+        <div
+            class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] flex items-center gap-3 section-label">
+            <span class="w-6 h-px bg-blue-glow/50"></span>
+            Experience
+        </div>
+
+        @if (isLoggedIn()) {
+        <button (click)="openAddModal()"
+            class="px-3 py-1.5 rounded-md border border-blue-main/30 bg-blue-main/10 text-blue-glow font-mono text-[10px] uppercase tracking-widest hover:bg-blue-main hover:text-white transition-all flex items-center gap-2">
+            <span>+ Add Experience</span>
+        </button>
+        }
+    </div>
+
     <h2 class="font-syne font-black text-[clamp(2rem,3.5vw,3rem)] tracking-tight leading-[1.1] mb-4 t-fg">My Journey
     </h2>
     <p class="t-sub text-[.94rem] leading-7 max-w-[520px]">A timeline of where I've worked, what I've built, and how
@@ -9,101 +21,80 @@
 
     <div class="tl-line mt-14 relative pl-8 max-[920px]:pl-6">
 
-        <!-- CURRENT -->
-        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7" data-tl-delay="0">
-            <div
-                class="tl-dot-current absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-teal">
+        @for (exp of experiences(); track exp.id) {
+
+        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7 group" [class.tl-exit]="isDeleting(exp.id)">
+
+            <div [class]="exp.badge_label === '3rd Year' || exp.badge_label === 'Current'
+                    ? 'tl-dot-current bg-teal shadow-[0_0_15px_rgba(20,184,166,.4)]'
+                    : 'tl-dot-default bg-blue-main'"
+                class="absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full z-10 transition-all border-2 border-[#0a0f1a]">
             </div>
-            <div class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300"
-                style="border-color:rgba(20,184,166,.24)">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Full-Stack Developer (Freelance)
+
+
+            <div class="relative z-0 rounded-2xl t-card backdrop-blur-[14px] border border-white/5
+                        hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)]
+                        transition-all duration-300" [style.border-color]="exp.badge_label === '3rd Year' || exp.badge_label === 'Current'
+                    ? 'rgba(20,184,166,.24)' : 'rgba(255,255,255,.05)'">
+
+                <div class="p-7">
+
+                    @if (isLoggedIn()) {
+
+                    <div class="absolute right-3 top-3 flex items-center gap-0.5 z-10
+                                opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                                bg-[var(--bg-soft)] border border-white/8 rounded-lg px-1 py-0.5 shadow-lg">
+                        <button (click)="openEditModal(exp)"
+                            class="p-1.5 rounded-md text-blue-glow hover:text-white hover:bg-blue-main/20 transition-all"
+                            title="Edit">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </button>
+                        <span class="w-px h-3.5 bg-white/10 mx-0.5"></span>
+                        <button (click)="handleDelete(exp)"
+                            class="p-1.5 rounded-md text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all"
+                            [disabled]="isDeleting(exp.id)" title="Delete">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
                     </div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0"
-                        style="background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.3);color:#14b8a6">Current</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">Self-Employed · Remote</div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>Jan 2024 — Present</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Designing and building full-stack web and mobile
-                    applications for clients. Delivering REST APIs with Laravel, cross-platform mobile apps with
-                    Flutter, and web frontends with Angular. Managing projects end-to-end from requirements gathering to
-                    deployment.</p>
+                    }
 
-            </div>
-        </div>
-
-        <!-- INTERN -->
-        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7" data-tl-delay="120">
-            <div
-                class="tl-dot-default absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-blue-main">
-            </div>
-            <div
-                class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:border-blue-main/40 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Software Development Intern
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-2" [class.pr-20]="isLoggedIn()">
+                        <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">{{ exp.title }}</div>
+                        <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0"
+                            [style.background]="(exp.badge_label === '3rd Year' || exp.badge_label === 'Current') ? 'rgba(20,184,166,.12)' : 'rgba(37,99,235,.1)'"
+                            [style.border]="(exp.badge_label === '3rd Year' || exp.badge_label === 'Current') ? '1px solid rgba(20,184,166,.3)' : '1px solid rgba(37,99,235,.22)'"
+                            [style.color]="(exp.badge_label === '3rd Year' || exp.badge_label === 'Current') ? '#14b8a6' : '#60a5fa'">
+                            {{ exp.badge_label }}
+                        </span>
                     </div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0 text-blue-glow"
-                        style="background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.22)">Internship</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">Company Name · City,
-                    Philippines</div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>Jun 2023 — Dec 2023</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Worked within an agile team to develop internal
-                    tools and web features. Contributed to backend development using Laravel and MySQL, performed API
-                    testing with Postman, and collaborated via GitHub for version control and code review cycles.</p>
 
-            </div>
-        </div>
-
-        <!-- CAPSTONE -->
-        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7" data-tl-delay="240">
-            <div
-                class="tl-dot-default absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-blue-main">
-            </div>
-            <div
-                class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:border-blue-main/40 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Capstone Lead Developer</div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0 text-blue-glow"
-                        style="background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.22)">Academic</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">University · BS Information
-                    Technology</div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>Aug 2022 — May 2023</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Led a team of 4 in designing and building a capstone
-                    mobile application using Flutter and Firebase. Responsible for architecture decisions, database
-                    design, UI implementation, and presenting the finished system to faculty evaluators.</p>
-
-            </div>
-        </div>
-
-        <!-- ORIGIN -->
-        <div class="tl-item relative pl-10 max-[920px]:pl-7" data-tl-delay="360">
-            <div
-                class="tl-dot-default absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-blue-main">
-            </div>
-            <div
-                class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:border-blue-main/40 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Started Software Development
+                    <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">{{ exp.company }}</div>
+                    <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2">
+                        <span class="w-3.5 h-px bg-current opacity-50"></span>{{ exp.date_range }}
                     </div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0 text-blue-glow"
-                        style="background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.22)">Origin</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">Self-taught · Philippines
-                </div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>2022</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Began the developer journey through self-study and
-                    university coursework. Learned the fundamentals of Java, Python, and web development — writing first
-                    lines of code, building small projects, and discovering a genuine passion for problem-solving
-                    through software.</p>
+                    <p class="text-[.87rem] t-body leading-[1.76] whitespace-pre-line">{{ exp.description }}</p>
 
+                </div>
             </div>
         </div>
+        }
 
+        @if (experiences().length === 0) {
+        <div class="py-10 text-center t-slate font-mono text-sm opacity-50">
+            No experience data found.
+        </div>
+        }
     </div>
 </section>
+
+@if (showModal()) {
+<app-experience-modal [experience]="selectedExperience()" [mode]="modalMode()" [isSaving]="isSaving()"
+    (close)="showModal.set(false)" (save)="handleSave($event)">
+</app-experience-modal>
+}

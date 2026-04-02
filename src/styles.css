@@ -128,6 +128,7 @@
         transition-delay: .36s;
     }
 
+    /* ── Timeline item: enter state ─────────────────────────────── */
     .tl-item {
         opacity: 0;
         transform: translateX(-18px);
@@ -139,6 +140,45 @@
         transform: translateX(0);
     }
 
+    /* ── Timeline item: delete exit animation ───────────────────── */
+    /*
+     * Applied by [class.tl-exit]="isDeleting(exp.id)" in the template.
+     * Overrides tl-vis so the card animates out before being removed from the DOM.
+     * overflow: hidden on the wrapper lets max-height collapse cleanly,
+     * preventing the gap left by a suddenly-removed element.
+     */
+    .tl-item.tl-exit {
+        animation: tlExit 0.48s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        pointer-events: none;
+        /* prevent double-click during animation */
+        overflow: hidden;
+    }
+
+    @keyframes tlExit {
+        0% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            max-height: 600px;
+            padding-bottom: 2.75rem;
+            /* matches pb-11 */
+        }
+
+        35% {
+            opacity: 0;
+            transform: translateX(32px) scale(0.97);
+            max-height: 600px;
+            padding-bottom: 2.75rem;
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(32px) scale(0.97);
+            max-height: 0;
+            padding-bottom: 0;
+        }
+    }
+
+    /* ── Ticker ─────────────────────────────────────────────────── */
     .ticker-outer {
         overflow: hidden;
     }
