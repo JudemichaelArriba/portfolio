@@ -1,16 +1,17 @@
-<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div
-        class="t-card bg-[var(--bg)] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transition-colors duration-300">
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+
+    <div (click)="handleClose()" [class.animate-backdrop-in]="!isClosing()" [class.animate-backdrop-out]="isClosing()"
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm">
+    </div>
+
+    <div [class.animate-modal-in]="!isClosing()" [class.animate-modal-out]="isClosing()"
+        class="modal-content relative t-card bg-[var(--bg)] border t-border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transition-colors duration-300">
 
         <div class="p-6 border-b t-border flex justify-between items-center">
             <h3 class="font-syne font-bold text-xl t-fg">
                 {{ mode === 'add' ? 'Add Experience' : 'Edit Experience' }}
             </h3>
-            <button type="button" (click)="close.emit()" class="t-muted hover:t-fg transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <button (click)="handleClose()" class="t-muted hover:t-fg transition-colors">✕</button>
         </div>
 
         <form (ngSubmit)="onSubmit()" class="p-6 flex flex-col gap-4">
@@ -29,7 +30,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Badge (e.g. 3rd Year)</label>
+                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Badge</label>
                     <input [(ngModel)]="experience.badge_label" name="badge"
                         class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all">
                 </div>
@@ -47,12 +48,10 @@
             </div>
 
             <div class="flex justify-end gap-3 mt-4">
-                <button type="button" (click)="close.emit()"
-                    class="px-4 py-2 font-mono text-[10px] uppercase t-slate hover:t-fg transition-colors">
-                    Cancel
-                </button>
+                <button type="button" (click)="handleClose()"
+                    class="px-4 py-2 font-mono text-[10px] uppercase t-slate hover:t-fg transition-colors">Cancel</button>
                 <button type="submit" [disabled]="isSaving"
-                    class="px-6 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest disabled:opacity-50 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-blue-500/20">
+                    class="px-6 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest disabled:opacity-50 hover:brightness-110 active:scale-95 transition-all">
                     {{ isSaving ? 'Saving...' : 'Save Experience' }}
                 </button>
             </div>
