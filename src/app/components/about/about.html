@@ -1,5 +1,4 @@
 <section id="about" class="section-pad">
-
     <div
         class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] mb-3 flex items-center gap-3 section-label">
         <span class="w-6 h-px bg-blue-glow/50"></span>
@@ -8,25 +7,18 @@
     <h2 class="font-syne font-black text-[clamp(2rem,3.5vw,3rem)] tracking-tight leading-[1.1] mb-4 t-fg">Who I Am</h2>
 
     <div class="grid grid-cols-[1.1fr_.9fr] max-[920px]:grid-cols-1 gap-20 max-[920px]:gap-10 mt-16 items-start">
-
         <div class="reveal flex flex-col gap-6">
-
             <div class="relative pl-5 border-l-2 border-blue-main/60 mb-2">
                 <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-blue-glow shadow-[0_0_8px_#60a5fa]">
                 </div>
                 <p class="font-syne font-semibold text-[1.08rem] t-fg leading-[1.6] italic">
-                    "I build things that work well, look great, and last."
+                    "{{ aboutData().quote }}"
                 </p>
             </div>
 
-            <p class="t-body text-base leading-[1.8]">I'm a <strong class="t-fg">passionate developer</strong> who
-                loves building things that actually work and look great doing it. I enjoy working across the full stack
-                — from crafting clean REST APIs in Laravel to building smooth mobile UIs in Flutter and Kotlin.</p>
-            <p class="t-body text-base leading-[1.8]">My approach is pragmatic: write code that's readable,
-                maintainable, and solves real problems. I care about the <strong class="t-fg">user experience</strong>
-                just as much as the technical architecture underneath.</p>
-            <p class="t-body text-base leading-[1.8]">Whether it's a mobile app, a web platform, or a backend
-                system, I bring the same focus and attention to every project I take on.</p>
+            <p class="t-body text-base leading-[1.8]">{{ aboutData().paragraph_1 }}</p>
+            <p class="t-body text-base leading-[1.8]">{{ aboutData().paragraph_2 }}</p>
+            <p class="t-body text-base leading-[1.8]">{{ aboutData().paragraph_3 }}</p>
 
             <div class="grid grid-cols-3 gap-4 mt-4 pt-6 border-t border-border/30">
                 <div class="flex flex-col gap-1">
@@ -45,12 +37,9 @@
                         class="font-mono text-[.68rem] t-slate uppercase tracking-widest leading-tight">Happy<br>Clients</span>
                 </div>
             </div>
-
         </div>
 
         <div class="flex flex-col gap-3">
-
-
             <div
                 class="reveal d1 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
                 <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
@@ -63,10 +52,9 @@
                 </div>
                 <div>
                     <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Location</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">Philippines · UTC+8</div>
+                    <div class="font-syne font-semibold text-[.86rem] t-fg">{{ aboutData().location }}</div>
                 </div>
             </div>
-
 
             <div
                 class="reveal d2 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
@@ -80,10 +68,9 @@
                 </div>
                 <div>
                     <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Focus</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">Full-Stack &amp; Mobile Dev</div>
+                    <div class="font-syne font-semibold text-[.86rem] t-fg">{{ aboutData().focus }}</div>
                 </div>
             </div>
-
 
             <div
                 class="reveal d3 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
@@ -99,7 +86,7 @@
                 </div>
                 <div>
                     <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Education</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">BS Information Technology</div>
+                    <div class="font-syne font-semibold text-[.86rem] t-fg">{{ aboutData().education }}</div>
                 </div>
             </div>
 
@@ -114,10 +101,9 @@
                 </div>
                 <div>
                     <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Preferred Editor</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">VS Code</div>
+                    <div class="font-syne font-semibold text-[.86rem] t-fg">{{ aboutData().preferred_editor }}</div>
                 </div>
             </div>
-
 
             <div
                 class="reveal d4 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
@@ -133,10 +119,9 @@
                 </div>
                 <div>
                     <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Work Preference</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">Remote · On-site · Hybrid</div>
+                    <div class="font-syne font-semibold text-[.86rem] t-fg">{{ aboutData().work_preference }}</div>
                 </div>
             </div>
-
 
             <div
                 class="reveal d4 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
@@ -149,38 +134,9 @@
                 </div>
                 <div>
                     <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Status</div>
-                    <div class="flex items-center gap-2">
-
-                        <div class="font-syne font-semibold text-[.86rem] t-fg">Building &amp; Learning Daily</div>
-                    </div>
+                    <div class="font-syne font-semibold text-[.86rem] t-fg">{{ aboutData().status }}</div>
                 </div>
             </div>
-
-            <a href="#contact"
-                class="reveal d4 group mt-1 t-card rounded-xl px-5 py-4 flex items-center justify-between gap-4 backdrop-blur-[12px] hover:border-blue-main/60 hover:bg-blue-main/8 transition-all duration-200 cursor-pointer">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-blue-main/20 rounded-[10px] flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M3 6.5A1.5 1.5 0 014.5 5h15A1.5 1.5 0 0121 6.5v11a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 17.5v-11z"
-                                stroke="currentColor" stroke-width="1.6" />
-                            <path d="M3 7l9 6.5L21 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Available for work
-                        </div>
-                        <div class="font-syne font-semibold text-[.86rem] text-blue-glow">Get in touch →</div>
-                    </div>
-                </div>
-                <svg class="w-4 h-4 t-slate group-hover:text-blue-glow group-hover:translate-x-0.5 transition-all duration-200"
-                    viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M10 5l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-            </a>
-
         </div>
     </div>
 </section>
