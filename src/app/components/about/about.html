@@ -1,32 +1,92 @@
 <section id="about" class="section-pad">
+    <div class="flex justify-between items-end mb-3">
+        <div
+            class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] flex items-center gap-3 section-label">
+            <span class="w-6 h-px bg-blue-glow/50"></span>
+            About
+        </div>
 
-    <div
-        class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] mb-3 flex items-center gap-3 section-label">
-        <span class="w-6 h-px bg-blue-glow/50"></span>
-        About
+        @if (isLoggedIn() && isEditing) {
+        <div class="flex gap-2 animate-fade-in">
+            <button (click)="cancelEdit()" [disabled]="isSaving()"
+                class="px-3 py-1.5 rounded-md border border-red-500/30 bg-red-500/5 text-red-400 font-mono text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-50">
+                Cancel
+            </button>
+
+            <button (click)="saveChanges()" [disabled]="isSaving()"
+                class="relative px-3 py-1.5 rounded-md border border-green-500/30 bg-green-500/10 text-green-400 font-mono text-[10px] uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all min-w-[120px] flex items-center justify-center disabled:opacity-70">
+
+                @if (isSaving()) {
+                <svg class="animate-spin h-3 w-3 mr-2" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                        fill="none"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <span>Saving...</span>
+                } @else {
+                <span>Save Changes</span>
+                }
+            </button>
+        </div>
+        }
     </div>
+
     <h2 class="font-syne font-black text-[clamp(2rem,3.5vw,3rem)] tracking-tight leading-[1.1] mb-4 t-fg">Who I Am</h2>
 
     <div class="grid grid-cols-[1.1fr_.9fr] max-[920px]:grid-cols-1 gap-20 max-[920px]:gap-10 mt-16 items-start">
 
         <div class="reveal flex flex-col gap-6">
-
-            <div class="relative pl-5 border-l-2 border-blue-main/60 mb-2">
+            <div class="relative group pl-5 border-l-2 border-blue-main/60 mb-2">
                 <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-blue-glow shadow-[0_0_8px_#60a5fa]">
                 </div>
-                <p class="font-syne font-semibold text-[1.08rem] t-fg leading-[1.6] italic">
-                    "I build things that work well, look great, and last."
+
+                @if (editingField() !== 'quote') {
+                <p class="font-syne font-semibold text-[1.08rem] t-fg leading-[1.6] italic">"{{ aboutData().quote }}"
                 </p>
+                @if (isLoggedIn() && !isEditing) {
+                <button (click)="startEdit('quote')"
+                    class="absolute -right-6 top-0 opacity-0 group-hover:opacity-100 text-blue-glow transition-all hover:scale-110">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                </button>
+                }
+                } @else {
+                <input [(ngModel)]="tempAboutData.quote" [disabled]="isSaving()"
+                    class="w-full bg-transparent border-b border-blue-main outline-none font-syne italic text-lg t-fg">
+                }
             </div>
 
-            <p class="t-body text-base leading-[1.8]">I'm a <strong class="t-fg">passionate developer</strong> who
-                loves building things that actually work and look great doing it. I enjoy working across the full stack
-                — from crafting clean REST APIs in Laravel to building smooth mobile UIs in Flutter and Kotlin.</p>
-            <p class="t-body text-base leading-[1.8]">My approach is pragmatic: write code that's readable,
-                maintainable, and solves real problems. I care about the <strong class="t-fg">user experience</strong>
-                just as much as the technical architecture underneath.</p>
-            <p class="t-body text-base leading-[1.8]">Whether it's a mobile app, a web platform, or a backend
-                system, I bring the same focus and attention to every project I take on.</p>
+            <div class="relative group">
+                @if (editingField() !== 'paragraphs') {
+                <div class="flex flex-col gap-4">
+                    <p class="t-body text-base leading-[1.8]">{{ aboutData().paragraph_1 }}</p>
+                    <p class="t-body text-base leading-[1.8]">{{ aboutData().paragraph_2 }}</p>
+                    <p class="t-body text-base leading-[1.8]">{{ aboutData().paragraph_3 }}</p>
+                </div>
+                @if (isLoggedIn() && !isEditing) {
+                <button (click)="startEdit('paragraphs')"
+                    class="absolute -right-6 top-0 opacity-0 group-hover:opacity-100 text-blue-glow transition-all hover:scale-110">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                </button>
+                }
+                } @else {
+                <div class="flex flex-col gap-4">
+                    <textarea [(ngModel)]="tempAboutData.paragraph_1" [disabled]="isSaving()" rows="3"
+                        class="w-full bg-blue-main/5 border border-blue-main/20 rounded p-2 outline-none t-body"></textarea>
+                    <textarea [(ngModel)]="tempAboutData.paragraph_2" [disabled]="isSaving()" rows="3"
+                        class="w-full bg-blue-main/5 border border-blue-main/20 rounded p-2 outline-none t-body"></textarea>
+                    <textarea [(ngModel)]="tempAboutData.paragraph_3" [disabled]="isSaving()" rows="3"
+                        class="w-full bg-blue-main/5 border border-blue-main/20 rounded p-2 outline-none t-body"></textarea>
+                </div>
+                }
+            </div>
 
             <div class="grid grid-cols-3 gap-4 mt-4 pt-6 border-t border-border/30">
                 <div class="flex flex-col gap-1">
@@ -40,147 +100,82 @@
                         class="font-mono text-[.68rem] t-slate uppercase tracking-widest leading-tight">Projects<br>Completed</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <span class="font-syne font-black text-[2rem] leading-none text-blue-glow">10+</span>
+                    <span class="font-syne font-black text-[2rem] leading-none text-blue-glow">6+</span>
                     <span
-                        class="font-mono text-[.68rem] t-slate uppercase tracking-widest leading-tight">Happy<br>Clients</span>
+                        class="font-mono text-[.68rem] t-slate uppercase tracking-widest leading-tight">Languages/<br>frameworks</span>
                 </div>
             </div>
-
         </div>
 
         <div class="flex flex-col gap-3">
-
-
-            <div
-                class="reveal d1 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
-                <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6z"
-                            stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                        <circle cx="12" cy="8" r="2" stroke="currentColor" stroke-width="1.6" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Location</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">Philippines · UTC+8</div>
-                </div>
-            </div>
-
-
-            <div
-                class="reveal d2 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
-                <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6" />
-                        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" />
-                        <circle cx="12" cy="12" r="1" fill="currentColor" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Focus</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">Full-Stack &amp; Mobile Dev</div>
-                </div>
-            </div>
-
-
-            <div
-                class="reveal d3 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
-                <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.6"
-                            stroke-linejoin="round" />
-                        <path d="M6 10.5V16c0 1.657 2.686 3 6 3s6-1.343 6-3v-5.5" stroke="currentColor"
-                            stroke-width="1.6" stroke-linecap="round" />
-                        <path d="M22 8v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Education</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">BS Information Technology</div>
-                </div>
-            </div>
-
-            <div
-                class="reveal d3 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
-                <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 18l6-6-6-6M8 6L2 12l6 6" stroke="currentColor" stroke-width="1.6"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Preferred Editor</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">VS Code</div>
-                </div>
-            </div>
-
-
-            <div
-                class="reveal d4 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
-                <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.6" />
-                        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="currentColor" stroke-width="1.6"
-                            stroke-linecap="round" />
-                        <path d="M12 12v3M10.5 13.5h3" stroke="currentColor" stroke-width="1.6"
-                            stroke-linecap="round" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Work Preference</div>
-                    <div class="font-syne font-semibold text-[.86rem] t-fg">Remote · On-site · Hybrid</div>
-                </div>
-            </div>
-
-
-            <div
-                class="reveal d4 t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
-                <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="1.6"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Status</div>
-                    <div class="flex items-center gap-2">
-
-                        <div class="font-syne font-semibold text-[.86rem] t-fg">Building &amp; Learning Daily</div>
-                    </div>
-                </div>
-            </div>
-
-            <a href="#contact"
-                class="reveal d4 group mt-1 t-card rounded-xl px-5 py-4 flex items-center justify-between gap-4 backdrop-blur-[12px] hover:border-blue-main/60 hover:bg-blue-main/8 transition-all duration-200 cursor-pointer">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-blue-main/20 rounded-[10px] flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M3 6.5A1.5 1.5 0 014.5 5h15A1.5 1.5 0 0121 6.5v11a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 17.5v-11z"
-                                stroke="currentColor" stroke-width="1.6" />
-                            <path d="M3 7l9 6.5L21 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">Available for work
-                        </div>
-                        <div class="font-syne font-semibold text-[.86rem] text-blue-glow">Get in touch →</div>
-                    </div>
-                </div>
-                <svg class="w-4 h-4 t-slate group-hover:text-blue-glow group-hover:translate-x-0.5 transition-all duration-200"
-                    viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M10 5l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-            </a>
-
+            <ng-container
+                *ngTemplateOutlet="infoCard; context: { field: 'location', label: 'Location', value: aboutData().location, icon: 'loc' }"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="infoCard; context: { field: 'focus', label: 'Focus', value: aboutData().focus, icon: 'focus' }"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="infoCard; context: { field: 'education', label: 'Education', value: aboutData().education, icon: 'edu' }"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="infoCard; context: { field: 'preferred_editor', label: 'Editor', value: aboutData().preferred_editor, icon: 'code' }"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="infoCard; context: { field: 'work_preference', label: 'Work Preference', value: aboutData().work_preference, icon: 'work' }"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="infoCard; context: { field: 'status', label: 'Status', value: aboutData().status, icon: 'bolt' }"></ng-container>
         </div>
     </div>
 </section>
+
+<ng-template #infoCard let-field="field" let-label="label" let-value="value" let-icon="icon">
+    <div class="relative group">
+        <div
+            class="reveal t-card rounded-xl px-5 py-4 flex items-center gap-4 backdrop-blur-[12px] border border-transparent hover:border-blue-main/40 hover:translate-x-1.5 transition-all duration-200">
+            <div class="w-10 h-10 bg-blue-main/12 rounded-[10px] flex items-center justify-center shrink-0">
+                @if (icon === 'loc') { <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.6">
+                    <path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6z" />
+                    <circle cx="12" cy="8" r="2" />
+                </svg> }
+                @if (icon === 'focus') { <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.6">
+                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="4" />
+                </svg> }
+                @if (icon === 'edu') { <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.6">
+                    <path d="M12 3L2 8l10 5 10-5-10-5z" />
+                    <path d="M6 10.5V16c0 1.657 2.686 3 6 3s6-1.343 6-3v-5.5" />
+                </svg> }
+                @if (icon === 'code') { <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.6">
+                    <path d="M16 18l6-6-6-6M8 6L2 12l6 6" />
+                </svg> }
+                @if (icon === 'work') { <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.6">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+                </svg> }
+                @if (icon === 'bolt') { <svg class="w-4 h-4 text-blue-glow" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.6">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg> }
+            </div>
+            <div class="flex-grow">
+                <div class="font-mono text-[.64rem] t-slate uppercase tracking-widest mb-1">{{ label }}</div>
+                @if (editingField() !== field) {
+                <div class="font-syne font-semibold text-[.86rem] t-fg">{{ value }}</div>
+                } @else {
+                <input [(ngModel)]="tempAboutData[field]" [disabled]="isSaving()"
+                    class="w-full bg-transparent border-b border-blue-main outline-none font-syne font-semibold text-[.86rem] t-fg">
+                }
+            </div>
+            @if (isLoggedIn() && !isEditing) {
+            <button (click)="startEdit(field)"
+                class="opacity-0 group-hover:opacity-100 text-blue-glow transition-all p-1 hover:scale-110">
+                <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+            </button>
+            }
+        </div>
+    </div>
+</ng-template>

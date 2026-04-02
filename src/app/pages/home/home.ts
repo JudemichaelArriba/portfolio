@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { HeroComponent } from '../../components/hero/hero';
-import { About } from '../../components/about/about';
+import { AboutComponent } from '../../components/about/about';
 import { Experience } from '../../components/experience/experience';
 import { Skills } from '../../components/skills/skills';
 import { Projects } from '../../components/projects/projects';
@@ -10,7 +10,7 @@ import { Footer } from '../../components/footer/footer';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [HeroComponent, About, Experience, Skills, Projects, Contact, Footer],
+  imports: [HeroComponent, AboutComponent, Experience, Skills, Projects, Contact, Footer],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
