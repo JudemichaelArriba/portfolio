@@ -1,7 +1,18 @@
 <section id="experience" class="section-pad">
-    <div
-        class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] mb-3 flex items-center gap-3 section-label">
-        Experience</div>
+    <div class="flex justify-between items-end mb-3">
+        <div
+            class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] flex items-center gap-3 section-label">
+            Experience
+        </div>
+
+        @if (isLoggedIn()) {
+        <button (click)="openAddModal()"
+            class="px-3 py-1 text-blue-glow border border-blue-main/30 rounded-full font-mono text-[10px] hover:bg-blue-main hover:text-white transition-all">
+            + Add Experience
+        </button>
+        }
+    </div>
+
     <h2 class="font-syne font-black text-[clamp(2rem,3.5vw,3rem)] tracking-tight leading-[1.1] mb-4 t-fg">My Journey
     </h2>
     <p class="t-sub text-[.94rem] leading-7 max-w-[520px]">A timeline of where I've worked, what I've built, and how
@@ -9,101 +20,47 @@
 
     <div class="tl-line mt-14 relative pl-8 max-[920px]:pl-6">
 
-        <!-- CURRENT -->
-        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7" data-tl-delay="0">
-            <div
-                class="tl-dot-current absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-teal">
+        @for (exp of experiences(); track exp.id) {
+        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7 group">
+            <div [class]="exp.badge_label === '3rd Year' || exp.badge_label === 'Current' ? 'tl-dot-current bg-teal' : 'tl-dot-default bg-blue-main'"
+                class="absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full">
             </div>
-            <div class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300"
-                style="border-color:rgba(20,184,166,.24)">
+
+            <div class="t-card relative rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300"
+                [style.border-color]="exp.badge_label === '3rd Year' || exp.badge_label === 'Current' ? 'rgba(20,184,166,.24)' : ''">
+
+                @if (isLoggedIn()) {
+                <button (click)="openEditModal(exp)"
+                    class="absolute right-4 top-4 opacity-0 group-hover:opacity-100 p-2 text-blue-glow transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                </button>
+                }
+
                 <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Full-Stack Developer (Freelance)
-                    </div>
+                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">{{ exp.title }}</div>
                     <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0"
-                        style="background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.3);color:#14b8a6">Current</span>
+                        [style.background]="exp.badge_label === '3rd Year' ? 'rgba(20,184,166,.12)' : 'rgba(37,99,235,.1)'"
+                        [style.border]="exp.badge_label === '3rd Year' ? '1px solid rgba(20,184,166,.3)' : '1px solid rgba(37,99,235,.22)'"
+                        [style.color]="exp.badge_label === '3rd Year' ? '#14b8a6' : '#60a5fa'">
+                        {{ exp.badge_label }}
+                    </span>
                 </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">Self-Employed · Remote</div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>Jan 2024 — Present</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Designing and building full-stack web and mobile
-                    applications for clients. Delivering REST APIs with Laravel, cross-platform mobile apps with
-                    Flutter, and web frontends with Angular. Managing projects end-to-end from requirements gathering to
-                    deployment.</p>
 
+                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">{{ exp.company }}</div>
+                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
+                        class="w-3.5 h-px bg-current opacity-50"></span>{{ exp.date_range }}</div>
+                <p class="text-[.87rem] t-body leading-[1.76]">{{ exp.description }}</p>
             </div>
         </div>
-
-        <!-- INTERN -->
-        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7" data-tl-delay="120">
-            <div
-                class="tl-dot-default absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-blue-main">
-            </div>
-            <div
-                class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:border-blue-main/40 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Software Development Intern
-                    </div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0 text-blue-glow"
-                        style="background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.22)">Internship</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">Company Name · City,
-                    Philippines</div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>Jun 2023 — Dec 2023</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Worked within an agile team to develop internal
-                    tools and web features. Contributed to backend development using Laravel and MySQL, performed API
-                    testing with Postman, and collaborated via GitHub for version control and code review cycles.</p>
-
-            </div>
-        </div>
-
-        <!-- CAPSTONE -->
-        <div class="tl-item relative pb-11 pl-10 max-[920px]:pl-7" data-tl-delay="240">
-            <div
-                class="tl-dot-default absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-blue-main">
-            </div>
-            <div
-                class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:border-blue-main/40 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Capstone Lead Developer</div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0 text-blue-glow"
-                        style="background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.22)">Academic</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">University · BS Information
-                    Technology</div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>Aug 2022 — May 2023</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Led a team of 4 in designing and building a capstone
-                    mobile application using Flutter and Firebase. Responsible for architecture decisions, database
-                    design, UI implementation, and presenting the finished system to faculty evaluators.</p>
-
-            </div>
-        </div>
-
-        <!-- ORIGIN -->
-        <div class="tl-item relative pl-10 max-[920px]:pl-7" data-tl-delay="360">
-            <div
-                class="tl-dot-default absolute left-[-40px] max-[920px]:left-[-32px] top-3 w-4 h-4 rounded-full bg-blue-main">
-            </div>
-            <div
-                class="t-card rounded-2xl p-7 backdrop-blur-[14px] hover:-translate-y-1 hover:border-blue-main/40 hover:shadow-[0_16px_48px_rgba(37,99,235,.1)] transition-all duration-300">
-                <div class="flex items-start justify-between gap-4 flex-wrap mb-2">
-                    <div class="font-syne font-bold text-[1.06rem] t-fg tracking-tight">Started Software Development
-                    </div>
-                    <span class="font-mono text-[.6rem] px-3 py-1 rounded-full tracking-[.06em] shrink-0 text-blue-glow"
-                        style="background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.22)">Origin</span>
-                </div>
-                <div class="font-mono text-[.74rem] text-blue-glow mb-1 tracking-[.04em]">Self-taught · Philippines
-                </div>
-                <div class="font-mono text-[.64rem] t-slate mb-4 flex items-center gap-2"><span
-                        class="w-3.5 h-px bg-current opacity-50"></span>2022</div>
-                <p class="text-[.87rem] t-body leading-[1.76] mb-4">Began the developer journey through self-study and
-                    university coursework. Learned the fundamentals of Java, Python, and web development — writing first
-                    lines of code, building small projects, and discovering a genuine passion for problem-solving
-                    through software.</p>
-
-            </div>
-        </div>
-
+        }
     </div>
 </section>
+
+@if (showModal()) {
+<app-experience-modal [experience]="selectedExperience()" [mode]="modalMode()" [isSaving]="isSaving()"
+    (close)="showModal.set(false)" (save)="handleSave($event)">
+</app-experience-modal>
+}
