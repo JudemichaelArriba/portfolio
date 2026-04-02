@@ -1,0 +1,27 @@
+/* Opening Animations */
+@keyframes backdropIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Closing Animations */
+@keyframes backdropOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes modalOut {
+    from { opacity: 1; transform: scale(1) translateY(0); }
+    to { opacity: 0; transform: scale(0.95) translateY(5px); }
+}
+
+.animate-backdrop-in { animation: backdropIn 0.3s ease-out forwards; }
+.animate-modal-in { animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+.animate-backdrop-out { animation: backdropOut 0.2s ease-in forwards; }
+.animate-modal-out { animation: modalOut 0.2s ease-in forwards; }

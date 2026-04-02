@@ -1,51 +1,73 @@
-<p>experience-modal works!</p>
-<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-[#0a0f1a] border border-blue-main/30 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center">
-            <h3 class="font-syne font-bold text-xl t-fg">{{ mode === 'add' ? 'Add Experience' : 'Edit Experience' }}
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+
+    <div (click)="handleClose()" [class.animate-backdrop-in]="!isClosing()" [class.animate-backdrop-out]="isClosing()"
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm">
+    </div>
+
+    <div [class.animate-modal-in]="!isClosing()" [class.animate-modal-out]="isClosing()"
+        class="modal-content relative t-card bg-[var(--bg)] border t-border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transition-colors duration-300">
+
+        <div class="p-6 border-b t-border flex justify-between items-center">
+            <h3 class="font-syne font-bold text-xl t-fg">
+                {{ mode === 'add' ? 'Add Experience' : 'Edit Experience' }}
             </h3>
-            <button (click)="close.emit()" class="t-muted hover:text-white">✕</button>
+            <button (click)="handleClose()" class="t-muted hover:t-fg transition-colors">✕</button>
         </div>
 
         <form (ngSubmit)="onSubmit()" class="p-6 flex flex-col gap-4">
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="font-mono text-[10px] uppercase t-slate">Job/Title</label>
-                    <input [(ngModel)]="experience.title" name="title" required
-                        class="bg-white/5 border border-white/10 rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm">
+                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Job/Title</label>
+                    <input [(ngModel)]="experience.title" name="title" required [disabled]="isSaving"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <label class="font-mono text-[10px] uppercase t-slate">Company</label>
-                    <input [(ngModel)]="experience.company" name="company" required
-                        class="bg-white/5 border border-white/10 rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm">
+                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Company</label>
+                    <input [(ngModel)]="experience.company" name="company" required [disabled]="isSaving"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="font-mono text-[10px] uppercase t-slate">Badge (e.g. 3rd Year)</label>
-                    <input [(ngModel)]="experience.badge_label" name="badge"
-                        class="bg-white/5 border border-white/10 rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm">
+                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Badge</label>
+                    <input [(ngModel)]="experience.badge_label" name="badge" [disabled]="isSaving"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <label class="font-mono text-[10px] uppercase t-slate">Date Range</label>
-                    <input [(ngModel)]="experience.date_range" name="date"
-                        class="bg-white/5 border border-white/10 rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm">
+                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Date Range</label>
+                    <input [(ngModel)]="experience.date_range" name="date" [disabled]="isSaving"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
                 </div>
             </div>
 
             <div class="flex flex-col gap-1">
-                <label class="font-mono text-[10px] uppercase t-slate">Description</label>
-                <textarea [(ngModel)]="experience.description" name="description" rows="4"
-                    class="bg-white/5 border border-white/10 rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm resize-none"></textarea>
+                <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Description</label>
+                <textarea [(ngModel)]="experience.description" name="description" rows="4" [disabled]="isSaving"
+                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm resize-none transition-all disabled:opacity-50"></textarea>
             </div>
 
             <div class="flex justify-end gap-3 mt-4">
-                <button type="button" (click)="close.emit()"
-                    class="px-4 py-2 font-mono text-[10px] uppercase t-slate hover:text-white">Cancel</button>
+                <button type="button" (click)="handleClose()" [disabled]="isSaving"
+                    class="px-4 py-2 font-mono text-[10px] uppercase t-slate hover:t-fg transition-colors disabled:opacity-30">
+                    Cancel
+                </button>
+
                 <button type="submit" [disabled]="isSaving"
-                    class="px-6 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest disabled:opacity-50">
-                    {{ isSaving ? 'Saving...' : 'Save Experience' }}
+                    class="relative px-7 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest min-w-[140px] flex items-center justify-center transition-all hover:brightness-110 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
+
+                    @if (isSaving) {
+                    <svg class="animate-spin h-3 w-3 mr-2" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                            fill="none"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <span>Saving...</span>
+                    } @else {
+                    <span>Save Experience</span>
+                    }
                 </button>
             </div>
         </form>
