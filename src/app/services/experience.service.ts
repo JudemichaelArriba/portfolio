@@ -27,4 +27,8 @@ export class ExperienceService {
     updateExperience(id: number, experience: Experience): Observable<Experience> {
         return this.http.put<any>(`${this.apiUrl}/${id}`, experience).pipe(map(this.extractData));
     }
+
+    deleteExperience(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    }
 }

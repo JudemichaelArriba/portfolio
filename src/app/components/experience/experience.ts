@@ -38,6 +38,7 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
   showModal = signal(false);
   modalMode = signal<'add' | 'edit'>('add');
   selectedExperience = signal<Partial<Experience>>({});
+  deletingIds = signal<Set<number | string>>(new Set());
 
   private observer: IntersectionObserver | null = null;
 
@@ -46,9 +47,7 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
     if (cached) {
       try {
         this.experienceList.set(JSON.parse(cached));
-      } catch (e) {
-
-      }
+      } catch (e) { }
     }
     this.loadExperiences();
   }
@@ -66,7 +65,6 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
       );
-
       this.observeItems();
     });
   }
@@ -96,6 +94,11 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
     localStorage.setItem('cached_experiences', JSON.stringify(data));
   }
 
+  isDeleting(id: number | string | undefined): boolean {
+    if (id == null) return false;
+    return this.deletingIds().has(id);
+  }
+
   openAddModal() {
     const nextOrder = this.experienceList().length > 0
       ? Math.max(...this.experienceList().map(e => e.sort_order ?? 0)) + 1
@@ -113,6 +116,52 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedExperience.set({ ...exp });
     this.modalMode.set('edit');
     this.showModal.set(true);
+  }
+
+  handleDelete(exp: Experience) {
+    this.dialog.confirm(
+      'Delete Experience',
+      `Are you sure you want to delete "${exp.title}"?`,
+      () => {
+        const id = exp.id!;
+
+
+        this.deletingIds.update(set => new Set([...set, id]));
+        this.cdr.detectChanges();
+
+
+        setTimeout(() => {
+          this.expService.deleteExperience(id).subscribe({
+            next: () => {
+              this.zone.run(() => {
+
+                this.experienceList.update(old => old.filter(e => e.id !== id));
+                this.deletingIds.update(set => {
+                  const next = new Set(set);
+                  next.delete(id);
+                  return next;
+                });
+                this.saveCache(this.experienceList());
+                this.cdr.detectChanges();
+              });
+
+            },
+            error: () => {
+
+              this.zone.run(() => {
+                this.deletingIds.update(set => {
+                  const next = new Set(set);
+                  next.delete(id);
+                  return next;
+                });
+                this.cdr.detectChanges();
+              });
+              this.dialog.error('Error', 'Delete failed.');
+            }
+          });
+        }, 500);
+      }
+    );
   }
 
   handleSave(data: Experience) {
