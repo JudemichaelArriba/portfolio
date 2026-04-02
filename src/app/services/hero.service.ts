@@ -26,4 +26,8 @@ export class HeroService {
             })
         );
     }
+
+    updateHero(id: number | string, data: Hero): Observable<Hero> {
+        return this.http.put<Hero>(`${this.apiUrl}/${id}`, data);
+    }
 }

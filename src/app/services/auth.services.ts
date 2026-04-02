@@ -5,24 +5,32 @@ import { User, LoginResponse } from '../models/user.model';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { DialogService } from './dialog.service';
-import { map } from 'rxjs/operators'; // Add this import
+import { map } from 'rxjs/operators'; 
 
 @Injectable({ providedIn: 'root' })
 export class AuthServices {
 
     private readonly tokenKey = 'auth_token';
+
     private currentUserSubject = new BehaviorSubject<User | null>(null);
 
     constructor(private http: HttpClient, private dialog: DialogService) {
+        this.hydrateUser();
+    }
+
+
+    private hydrateUser(): void {
         const token = localStorage.getItem(this.tokenKey);
         if (token) {
-            this.currentUserSubject.next({ name: '', email: '', token });
-        }
 
+            this.currentUserSubject.next({ name: 'User', email: '', token });
+        }
     }
+
     get currentUser$(): Observable<User | null> {
         return this.currentUserSubject.asObservable();
     }
+
     get token(): string | null {
         return localStorage.getItem(this.tokenKey);
     }
@@ -53,7 +61,13 @@ export class AuthServices {
         return throwError(() => error);
     }
 
+
     logout(): void {
+
+        this.http.post(`${environment.apiUrl}/logout`, {}).subscribe({
+            error: (err) => console.error('Backend logout failed', err)
+        });
+
         localStorage.removeItem(this.tokenKey);
         this.currentUserSubject.next(null);
     }

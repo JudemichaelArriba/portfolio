@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators, FormControl, FormGroup } from '@angular/forms';
 import { AuthServices } from '../../services/auth.services';
@@ -21,10 +22,10 @@ export class Login implements OnInit {
   private fb = inject(NonNullableFormBuilder);
   private auth = inject(AuthServices);
   private dialog = inject(DialogService);
+  private router = inject(Router); 
 
   currentTheme: 'dark' | 'light' = 'dark';
   loginForm: FormGroup<LoginFormControls>;
-
   isLoggingIn = false;
 
   constructor() {
@@ -36,6 +37,10 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     this.currentTheme = this.themeService.initTheme();
+
+    if (this.auth.token) {
+      this.router.navigate(['/']);
+    }
   }
 
   toggleTheme(): void {
@@ -57,11 +62,10 @@ export class Login implements OnInit {
         this.isLoggingIn = false;
 
         this.dialog.success('Welcome', `Hello ${userData.name}`);
- 
+        this.router.navigate(['/']); 
       },
       error: (err) => {
         this.isLoggingIn = false;
-        
       }
     });
   }
