@@ -16,12 +16,13 @@
         </button>
     </div>
 
-    <div class="grid grid-cols-2 max-[920px]:grid-cols-1 gap-7">
+    <div class="grid grid-cols-2 max-[920px]:grid-cols-1 gap-7 items-stretch">
         @for (proj of projects(); track proj.id; let i = $index) {
-        <div class="reveal tl-item" [class.tl-exit]="deletingIds().has(proj.id)"
+        <div class="reveal tl-item h-full" [class.tl-exit]="deletingIds().has(proj.id)"
             [style.transition-delay]="(i * 0.1) + 's'">
+
             <div
-                class="t-card rounded-[18px] overflow-hidden backdrop-blur-[12px] group hover:-translate-y-[7px] hover:border-blue-main/38 hover:shadow-[0_24px_64px_rgba(37,99,235,.12)] transition-all duration-300 relative">
+                class="t-card rounded-[18px] overflow-hidden backdrop-blur-[12px] group hover:-translate-y-[7px] hover:border-blue-main/38 hover:shadow-[0_24px_64px_rgba(37,99,235,.12)] transition-all duration-300 relative flex flex-col h-full">
 
                 <div *ngIf="isLoggedIn()"
                     class="absolute top-4 right-4 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -31,7 +32,7 @@
                         class="p-2 rounded-lg bg-black/50 text-white backdrop-blur-md hover:bg-red-600 transition-colors">🗑</button>
                 </div>
 
-                <div class="h-[230px] relative flex flex-col items-center justify-center gap-2.5 overflow-hidden"
+                <div class="h-[230px] shrink-0 relative flex flex-col items-center justify-center gap-2.5 overflow-hidden"
                     [style.background]="!proj.image ? 'linear-gradient(140deg, #0c1445 0%, #1e3a8a 55%, #0f172a 100%)' : 'none'">
 
                     <span
@@ -47,11 +48,16 @@
                     }
                 </div>
 
-                <div class="p-7">
-                    <div class="font-syne font-bold text-[1.25rem] t-fg mb-2.5 tracking-tight">{{ proj.title }}</div>
-                    <p class="text-[.86rem] t-muted leading-[1.72] mb-6">{{ proj.description }}</p>
+                <div class="p-7 flex flex-col flex-1">
+                    <div class="font-syne font-bold text-[1.25rem] t-fg mb-2.5 tracking-tight line-clamp-1">
+                        {{ proj.title }}
+                    </div>
 
-                    <div class="flex items-center justify-between">
+                    <p class="text-[.86rem] t-muted leading-[1.72] mb-6 line-clamp-3 flex-1">
+                        {{ proj.description }}
+                    </p>
+
+                    <div class="flex items-center justify-between mt-auto">
                         <a [href]="proj.github_url" target="_blank"
                             class="font-mono text-[.7rem] t-slate no-underline flex items-center gap-1.5 tracking-[.06em] hover:text-blue-glow transition-colors duration-200">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
