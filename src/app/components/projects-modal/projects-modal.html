@@ -1,59 +1,79 @@
 <div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+
     <div (click)="handleClose()" [class.animate-backdrop-in]="!isClosing()" [class.animate-backdrop-out]="isClosing()"
         class="absolute inset-0 bg-black/60 backdrop-blur-sm">
     </div>
 
     <div [class.animate-modal-in]="!isClosing()" [class.animate-modal-out]="isClosing()"
-        class="modal-content relative t-card bg-[var(--bg)] border t-border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transition-colors duration-300">
+        class="modal-content relative t-card bg-[var(--bg)] border t-border rounded-2xl w-full max-w-lg shadow-2xl transition-colors duration-300 flex flex-col max-h-[90vh]">
 
-        <div class="p-6 border-b t-border flex justify-between items-center">
+        <div class="p-6 border-b t-border flex justify-between items-center shrink-0 rounded-t-2xl">
             <h3 class="font-syne font-bold text-xl t-fg">
                 {{ mode === 'add' ? 'Add Project' : 'Edit Project' }}
             </h3>
             <button (click)="handleClose()" class="t-muted hover:t-fg transition-colors">✕</button>
         </div>
 
-        <form (ngSubmit)="submit()" class="p-6 flex flex-col gap-4">
+        <form #projForm="ngForm" (ngSubmit)="submit()" class="p-6 flex flex-col gap-5 overflow-y-auto">
+
             <div class="flex flex-col gap-2">
-                <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Project Preview Image</label>
-                <div class="flex items-center gap-4">
+                <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Project Cover</label>
+                <div
+                    class="group relative w-full h-44 rounded-xl border-2 border-dashed t-border overflow-hidden bg-[var(--card)] flex flex-col items-center justify-center transition-all hover:border-blue-main/50">
+
+                    @if (project.image) {
+                    <img [src]="project.image" class="w-full h-full object-cover">
                     <div
-                        class="w-20 h-20 rounded-lg border t-border overflow-hidden bg-[var(--card)] flex items-center justify-center">
-                        <img *ngIf="project.image" [src]="project.image" class="w-full h-full object-cover">
-                        <span *ngIf="!project.image" class="text-xl opacity-20">🖼️</span>
+                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+                        <span class="text-white text-[10px] font-mono uppercase tracking-widest">Change Image</span>
                     </div>
+                    } @else {
+                    <div class="flex flex-col items-center gap-2 opacity-40">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 19.5h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                        <span class="text-[10px] font-mono uppercase tracking-wider">Click to upload</span>
+                    </div>
+                    }
+
                     <input type="file" (change)="onFileChange($event)" accept="image/*"
-                        class="text-[10px] t-body file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-mono file:bg-blue-600/10 file:text-blue-500 hover:file:bg-blue-600 hover:file:text-white transition-all">
+                        class="absolute inset-0 opacity-0 cursor-pointer" [disabled]="isSaving">
                 </div>
             </div>
 
             <div class="flex flex-col gap-1">
                 <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Project Title</label>
-                <input [(ngModel)]="project.title" name="title" required [disabled]="isSaving"
-                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
+                <input [(ngModel)]="project.title" name="title" required #title="ngModel" [disabled]="isSaving"
+                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all"
+                    [class.border-red-500/50]="title.invalid && title.touched">
             </div>
 
             <div class="flex flex-col gap-1">
                 <label class="font-mono text-[10px] uppercase t-slate tracking-wider">GitHub URL</label>
-                <input [(ngModel)]="project.github_url" name="github_url" [disabled]="isSaving"
-                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
+                <input [(ngModel)]="project.github_url" name="github_url" required #url="ngModel" [disabled]="isSaving"
+                    [pattern]="urlPattern" placeholder="https://github.com/..."
+                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all"
+                    [class.border-red-500/50]="url.invalid && url.touched">
             </div>
 
             <div class="flex flex-col gap-1">
                 <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Description</label>
-                <textarea [(ngModel)]="project.description" name="description" rows="3" [disabled]="isSaving"
-                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm resize-none transition-all disabled:opacity-50"></textarea>
+                <textarea [(ngModel)]="project.description" name="description" rows="4" required #desc="ngModel"
+                    [disabled]="isSaving"
+                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm resize-none transition-all"
+                    [class.border-red-500/50]="desc.invalid && desc.touched"></textarea>
             </div>
 
-            <div class="flex justify-end gap-3 mt-4">
+            <div class="flex justify-end gap-3 pt-2">
                 <button type="button" (click)="handleClose()" [disabled]="isSaving"
                     class="px-4 py-2 font-mono text-[10px] uppercase t-slate hover:t-fg transition-colors disabled:opacity-30">
                     Cancel
                 </button>
 
-                <button type="submit" [disabled]="isSaving"
-                    class="relative px-7 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest min-w-[140px] flex items-center justify-center transition-all hover:brightness-110 active:scale-95 disabled:opacity-70">
-
+                <button type="submit" [disabled]="isSaving || projForm.invalid"
+                    class="relative px-7 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest min-w-[140px] flex items-center justify-center transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:grayscale">
                     @if (isSaving) {
                     <svg class="animate-spin h-3 w-3 mr-2" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"

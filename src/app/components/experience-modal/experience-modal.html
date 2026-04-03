@@ -14,37 +14,54 @@
             <button (click)="handleClose()" class="t-muted hover:t-fg transition-colors">✕</button>
         </div>
 
-        <form (ngSubmit)="onSubmit()" class="p-6 flex flex-col gap-4">
+        <form #expForm="ngForm" (ngSubmit)="onSubmit()" class="p-6 flex flex-col gap-4">
+
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
                     <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Job/Title</label>
-                    <input [(ngModel)]="experience.title" name="title" required [disabled]="isSaving"
-                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
+                    <input [(ngModel)]="experience.title" name="title" required #title="ngModel" [disabled]="isSaving"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50"
+                        [class.border-red-500]="title.invalid && title.touched">
+                    @if (title.invalid && title.touched) {
+                    <span class="text-[9px] text-red-500 font-mono uppercase">Required</span>
+                    }
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Company</label>
-                    <input [(ngModel)]="experience.company" name="company" required [disabled]="isSaving"
-                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
+                    <input [(ngModel)]="experience.company" name="company" required #company="ngModel"
+                        [disabled]="isSaving"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50"
+                        [class.border-red-500]="company.invalid && company.touched">
+                    @if (company.invalid && company.touched) {
+                    <span class="text-[9px] text-red-500 font-mono uppercase">Required</span>
+                    }
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Badge</label>
+                    <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Badge (e.g. Full-time)</label>
                     <input [(ngModel)]="experience.badge_label" name="badge" [disabled]="isSaving"
                         class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
                 </div>
                 <div class="flex flex-col gap-1">
                     <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Date Range</label>
-                    <input [(ngModel)]="experience.date_range" name="date" [disabled]="isSaving"
-                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50">
+                    <input [(ngModel)]="experience.date_range" name="date" required #date="ngModel"
+                        [disabled]="isSaving" placeholder="2024 - Present"
+                        class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm transition-all disabled:opacity-50"
+                        [class.border-red-500]="date.invalid && date.touched">
                 </div>
             </div>
 
             <div class="flex flex-col gap-1">
                 <label class="font-mono text-[10px] uppercase t-slate tracking-wider">Description</label>
-                <textarea [(ngModel)]="experience.description" name="description" rows="4" [disabled]="isSaving"
-                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm resize-none transition-all disabled:opacity-50"></textarea>
+                <textarea [(ngModel)]="experience.description" name="description" rows="4" required #desc="ngModel"
+                    [disabled]="isSaving"
+                    class="bg-[var(--card)] border t-border rounded-lg p-2.5 outline-none focus:border-blue-main t-fg text-sm resize-none transition-all disabled:opacity-50"
+                    [class.border-red-500]="desc.invalid && desc.touched"></textarea>
+                @if (desc.invalid && desc.touched) {
+                <span class="text-[9px] text-red-500 font-mono uppercase text-right">Please provide a description</span>
+                }
             </div>
 
             <div class="flex justify-end gap-3 mt-4">
@@ -53,8 +70,8 @@
                     Cancel
                 </button>
 
-                <button type="submit" [disabled]="isSaving"
-                    class="relative px-7 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest min-w-[140px] flex items-center justify-center transition-all hover:brightness-110 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
+                <button type="submit" [disabled]="isSaving || expForm.invalid"
+                    class="relative px-7 py-2 rounded-md bg-blue-main text-white font-mono text-[10px] uppercase tracking-widest min-w-[140px] flex items-center justify-center transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed">
 
                     @if (isSaving) {
                     <svg class="animate-spin h-3 w-3 mr-2" viewBox="0 0 24 24">

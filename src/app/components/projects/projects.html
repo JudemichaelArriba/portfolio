@@ -1,8 +1,7 @@
 <section id="projects" class="section-pad">
     <div class="flex justify-between items-end mb-12">
         <div>
-            <div
-                class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] mb-3 flex items-center gap-3 section-label">
+            <div class="font-mono text-[.7rem] text-blue-glow uppercase tracking-[.14em] mb-3 flex items-center gap-3 section-label">
                 Work
             </div>
             <h2 class="font-syne font-black text-[clamp(2rem,3.5vw,3rem)] tracking-tight leading-[1.1] mb-4 t-fg">
@@ -21,50 +20,59 @@
         <div class="reveal tl-item h-full" [class.tl-exit]="deletingIds().has(proj.id)"
             [style.transition-delay]="(i * 0.1) + 's'">
 
-            <div
-                class="t-card rounded-[18px] overflow-hidden backdrop-blur-[12px] group hover:-translate-y-[7px] hover:border-blue-main/38 hover:shadow-[0_24px_64px_rgba(37,99,235,.12)] transition-all duration-300 relative flex flex-col h-full">
+            <div class="t-card rounded-[18px] overflow-hidden backdrop-blur-[12px] group hover:-translate-y-[7px] hover:border-blue-main/38 hover:shadow-[0_24px_64px_rgba(37,99,235,.12)] transition-all duration-300 relative flex flex-col h-full">
 
-                <div *ngIf="isLoggedIn()"
-                    class="absolute top-4 right-4 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button (click)="openEditModal(proj)"
-                        class="p-2 rounded-lg bg-black/50 text-white backdrop-blur-md hover:bg-blue-600 transition-colors">✎</button>
-                    <button (click)="handleDelete(proj)"
-                        class="p-2 rounded-lg bg-black/50 text-white backdrop-blur-md hover:bg-red-600 transition-colors">🗑</button>
+                <div *ngIf="isLoggedIn()" class="absolute top-3 right-3 z-20 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[var(--bg-soft)] border border-white/8 rounded-lg px-1 py-0.5 shadow-lg">
+                    <button (click)="openEditModal(proj)" class="p-1.5 rounded-md text-blue-glow hover:text-white hover:bg-blue-main/20 transition-all">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </button>
+                    <button (click)="handleDelete(proj)" class="p-1.5 rounded-md text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
                 </div>
 
-                <div class="h-[230px] shrink-0 relative flex flex-col items-center justify-center gap-2.5 overflow-hidden"
-                    [style.background]="!proj.image ? 'linear-gradient(140deg, #0c1445 0%, #1e3a8a 55%, #0f172a 100%)' : 'none'">
-
-                    <span
-                        class="absolute top-4 left-[18px] z-10 font-mono text-[.66rem] text-white/30 tracking-[.08em]">
+                <div class="h-[230px] shrink-0 relative flex flex-col items-center justify-center overflow-hidden bg-[var(--card)]">
+                    <span class="absolute top-4 left-[18px] z-10 font-mono text-[.66rem] text-white/30 tracking-[.08em]">
                         0{{i + 1}} — {{ proj.title }}
                     </span>
 
-                    @if (proj.image) {
-                    <img [src]="proj.image"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    } @else {
-                    <span class="text-[3rem] opacity-55">🚀</span>
+                    @if (isFetching() || (proj.image && !loadedImages().has(proj.id))) {
+                        <div class="absolute inset-0 flex items-center justify-center bg-[var(--card)] z-10">
+                            <div class="w-6 h-6 border-2 border-blue-main/20 border-t-blue-main rounded-full animate-spin"></div>
+                        </div>
+                    }
+
+                    @if (!isFetching()) {
+                        @if (proj.image) {
+                            <img [src]="proj.image" 
+                                 (load)="onImageLoad(proj.id)"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                                 [class.opacity-0]="!loadedImages().has(proj.id)"
+                                 [class.opacity-100]="loadedImages().has(proj.id)">
+                        } @else {
+                            <div class="flex flex-col items-center gap-3 opacity-20 transition-opacity duration-300 group-hover:opacity-30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 19.5h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                </svg>
+                                <span class="font-mono text-[10px] uppercase tracking-[0.2em]">No Preview Available</span>
+                            </div>
+                        }
                     }
                 </div>
 
                 <div class="p-7 flex flex-col flex-1">
-                    <div class="font-syne font-bold text-[1.25rem] t-fg mb-2.5 tracking-tight line-clamp-1">
-                        {{ proj.title }}
-                    </div>
-
-                    <p class="text-[.86rem] t-muted leading-[1.72] mb-6 line-clamp-3 flex-1">
-                        {{ proj.description }}
-                    </p>
-
+                    <div class="font-syne font-bold text-[1.25rem] t-fg mb-2.5 tracking-tight line-clamp-1">{{ proj.title }}</div>
+                    <p class="text-[.86rem] t-muted leading-[1.72] mb-6 line-clamp-3 flex-1">{{ proj.description }}</p>
                     <div class="flex items-center justify-between mt-auto">
-                        <a [href]="proj.github_url" target="_blank"
-                            class="font-mono text-[.7rem] t-slate no-underline flex items-center gap-1.5 tracking-[.06em] hover:text-blue-glow transition-colors duration-200">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path
-                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                            </svg>Source Code
+                        <a [href]="proj.github_url" target="_blank" class="font-mono text-[.7rem] t-slate no-underline flex items-center gap-1.5 tracking-[.06em] hover:text-blue-glow transition-colors duration-200">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                            </svg>
+                            Source Code
                         </a>
                     </div>
                 </div>

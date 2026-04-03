@@ -8,6 +8,7 @@ import { Projects } from '../../models/projects.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './projects-modal.html',
+  styleUrl: './projects-modal.css'
 })
 export class ProjectsModal {
   @Input() mode: 'add' | 'edit' = 'add';
@@ -15,15 +16,23 @@ export class ProjectsModal {
   @Input() isSaving = false;
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Projects>();
+
   isClosing = signal(false);
+  urlPattern = "^(https?:\\/\\/)?([\\da-z.-]+)\\.([a-z.]{2,6})([\\/\\w .-]*)*\\/?$";
 
   submit() {
+    if (this.isSaving) return;
     this.save.emit(this.project as Projects);
   }
 
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File is too large. Please upload an image under 2MB.");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         this.project.image = reader.result as string;

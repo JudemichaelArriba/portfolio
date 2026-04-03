@@ -1,6 +1,6 @@
 import {
   Component, OnInit, AfterViewInit, OnDestroy,
-  inject, signal, computed, ChangeDetectorRef, NgZone, ElementRef
+  inject, signal, computed, NgZone, ElementRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectsService } from '../../services/projects.service';
@@ -22,7 +22,6 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
   private projService = inject(ProjectsService);
   private auth = inject(AuthServices);
   private dialog = inject(DialogService);
-  private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
   private el = inject(ElementRef);
 
@@ -33,18 +32,27 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     [...this.projectList()].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
   );
 
+  // KEY FIX: Tracks if we are currently talking to the backend
+  isFetching = signal(true); 
+  
   isSaving = signal(false);
   showModal = signal(false);
   modalMode = signal<'add' | 'edit'>('add');
   selectedProject = signal<Partial<Projects>>({});
   deletingIds = signal<Set<number>>(new Set());
+  loadedImages = signal<Set<number>>(new Set());
 
   private observer: IntersectionObserver | null = null;
 
   ngOnInit() {
     const cached = localStorage.getItem('cached_projects');
     if (cached) {
-      try { this.projectList.set(JSON.parse(cached)); } catch (e) { }
+      try { 
+        this.projectList.set(JSON.parse(cached));
+        // If we have cache, we can show it immediately, 
+        // but loadProjects will still run in background
+        this.isFetching.set(false); 
+      } catch (e) { }
     }
     this.loadProjects();
   }
@@ -57,12 +65,29 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.observer?.disconnect();
   }
 
+  onImageLoad(id: number) {
+    this.loadedImages.update(set => new Set([...set, id]));
+  }
+
+  loadProjects() {
+    this.isFetching.set(true);
+    this.projService.getProjects().pipe(
+      finalize(() => this.isFetching.set(false))
+    ).subscribe({
+      next: (data) => {
+        this.projectList.set(data);
+        this.updateCache(data);
+        setTimeout(() => this.observeItems(), 100);
+      },
+      error: () => this.isFetching.set(false)
+    });
+  }
+
   private updateCache(list: Projects[]) {
     try {
       const lightData = list.map(({ image, ...rest }) => rest);
       localStorage.setItem('cached_projects', JSON.stringify(lightData));
     } catch (e) {
-      console.warn('LocalStorage quota exceeded, clearing cache.');
       localStorage.removeItem('cached_projects');
     }
   }
@@ -89,21 +114,10 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     items.forEach((item: Element) => this.observer?.observe(item));
   }
 
-  loadProjects() {
-    this.projService.getProjects().subscribe({
-      next: (data) => {
-        this.projectList.set(data);
-        this.updateCache(data);
-        setTimeout(() => this.observeItems(), 100);
-      }
-    });
-  }
-
   openAddModal() {
     const nextOrder = this.projectList().length > 0
       ? Math.max(...this.projectList().map(p => p.sort_order ?? 0)) + 1
       : 1;
-
     this.selectedProject.set({ sort_order: nextOrder, title: '', description: '', github_url: '' });
     this.modalMode.set('add');
     this.showModal.set(true);
@@ -119,31 +133,23 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialog.confirm('Delete Project', `Delete "${proj.title}"?`, () => {
       const id = proj.id;
       this.deletingIds.update(set => new Set([...set, id]));
-
-      setTimeout(() => {
-        this.projService.deleteProject(id).subscribe({
-          next: () => {
-            this.projectList.update(old => {
-              const updated = old.filter(p => p.id !== id);
-              this.updateCache(updated);
-              return updated;
-            });
-            this.deletingIds.update(set => {
-              const next = new Set(set);
-              next.delete(id);
-              return next;
-            });
-          },
-          error: () => {
-            this.deletingIds.update(set => {
-              const next = new Set(set);
-              next.delete(id);
-              return next;
-            });
-            this.dialog.error('Error', 'Failed to delete project. Please try again.');
-          }
-        });
-      }, 500);
+      this.projService.deleteProject(id).subscribe({
+        next: () => {
+          this.projectList.update(old => old.filter(p => p.id !== id));
+          this.deletingIds.update(set => {
+            const next = new Set(set);
+            next.delete(id);
+            return next;
+          });
+        },
+        error: () => {
+          this.deletingIds.update(set => {
+            const next = new Set(set);
+            next.delete(id);
+            return next;
+          });
+        }
+      });
     });
   }
 
@@ -151,22 +157,11 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isSaving.set(true);
     const isAdd = this.modalMode() === 'add';
     const request = isAdd ? this.projService.createProject(data) : this.projService.updateProject(data.id, data);
-
     request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
       next: (res) => {
-        this.projectList.update(old => {
-          const updated = isAdd ? [...old, res] : old.map(p => p.id === res.id ? res : p);
-          this.updateCache(updated);
-          return updated;
-        });
+        this.projectList.update(old => isAdd ? [...old, res] : old.map(p => p.id === res.id ? res : p));
         this.showModal.set(false);
-        const message = isAdd ? 'Project added successfully!' : 'Project updated successfully!';
-        this.dialog.success('Success', message);
-
         if (isAdd) setTimeout(() => this.observeItems(), 100);
-      },
-      error: (err) => {
-        this.dialog.error('Save Failed', 'Server error: Could not save project data.');
       }
     });
   }
