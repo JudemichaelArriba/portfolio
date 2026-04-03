@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Projects } from '../../models/projects.model';
@@ -18,7 +18,9 @@ export class ProjectsModal {
   @Output() save = new EventEmitter<Projects>();
 
   isClosing = signal(false);
-  urlPattern = "^(https?:\\/\\/)?([\\da-z.-]+)\\.([a-z.]{2,6})([\\/\\w .-]*)*\\/?$";
+  urlPattern = '^(https?:\\/\\/)?((?:[\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*\\/?$)';
+
+  constructor(private cdr: ChangeDetectorRef) { } 
 
   submit() {
     if (this.isSaving) return;
@@ -36,6 +38,7 @@ export class ProjectsModal {
       const reader = new FileReader();
       reader.onload = () => {
         this.project.image = reader.result as string;
+        this.cdr.detectChanges();  
       };
       reader.readAsDataURL(file);
     }
