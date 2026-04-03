@@ -3,14 +3,14 @@ import { HeroComponent } from '../../components/hero/hero';
 import { AboutComponent } from '../../components/about/about';
 import { ExperienceComponent } from '../../components/experience/experience';
 import { Skills } from '../../components/skills/skills';
-import { Projects } from '../../components/projects/projects';
+import { ProjectsComponent } from '../../components/projects/projects';
 import { Contact } from '../../components/contact/contact';
 import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [HeroComponent, AboutComponent, ExperienceComponent, Skills, Projects, Contact, Footer],
+  imports: [HeroComponent, AboutComponent, ExperienceComponent, Skills, ProjectsComponent, Contact, Footer],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

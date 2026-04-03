@@ -18,9 +18,17 @@ export class ExperienceModal {
   @Output() save = new EventEmitter<Experience>();
   isClosing = signal(false);
 
-
   onSubmit() {
-    this.save.emit(this.experience as Experience);
+    if (this.isFormValid()) {
+      this.save.emit(this.experience as Experience);
+    }
+  }
+
+
+  isFormValid(): boolean {
+    return !!(this.experience.title?.trim() &&
+      this.experience.company?.trim() &&
+      this.experience.description?.trim());
   }
 
   handleClose() {
