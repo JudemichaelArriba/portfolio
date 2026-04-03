@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Projects } from '../../models/projects.model';
@@ -15,8 +15,29 @@ export class ProjectsModal {
   @Input() isSaving = false;
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Projects>();
+  isClosing = signal(false);
 
   submit() {
     this.save.emit(this.project as Projects);
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.project.image = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  handleClose() {
+    if (this.isSaving) return;
+    this.isClosing.set(true);
+
+    setTimeout(() => {
+      this.close.emit();
+    }, 200);
   }
 }

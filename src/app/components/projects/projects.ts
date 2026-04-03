@@ -120,6 +120,15 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
               return next;
             });
             localStorage.setItem('cached_projects', JSON.stringify(this.projectList()));
+
+          },
+          error: () => {
+            this.deletingIds.update(set => {
+              const next = new Set(set);
+              next.delete(id);
+              return next;
+            });
+            this.dialog.error('Error', 'Failed to delete project. Please try again.');
           }
         });
       }, 500);
@@ -136,7 +145,13 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.projectList.update(old => isAdd ? [...old, res] : old.map(p => p.id === res.id ? res : p));
         localStorage.setItem('cached_projects', JSON.stringify(this.projectList()));
         this.showModal.set(false);
+        const message = isAdd ? 'Project added successfully!' : 'Project updated successfully!';
+        this.dialog.success('Success', message);
+
         if (isAdd) setTimeout(() => this.observeItems(), 100);
+      },
+      error: (err) => {
+        this.dialog.error('Save Failed', 'Server error: Could not save project data.');
       }
     });
   }

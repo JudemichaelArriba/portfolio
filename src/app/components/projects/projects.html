@@ -31,12 +31,20 @@
                         class="p-2 rounded-lg bg-black/50 text-white backdrop-blur-md hover:bg-red-600 transition-colors">🗑</button>
                 </div>
 
-                <div class="h-[230px] relative flex flex-col items-center justify-center gap-2.5"
-                    [style.background]="'linear-gradient(140deg, #0c1445 0%, #1e3a8a 55%, #0f172a 100%)'">
-                    <span class="absolute top-4 left-[18px] font-mono text-[.66rem] text-white/30 tracking-[.08em]">
+                <div class="h-[230px] relative flex flex-col items-center justify-center gap-2.5 overflow-hidden"
+                    [style.background]="!proj.image ? 'linear-gradient(140deg, #0c1445 0%, #1e3a8a 55%, #0f172a 100%)' : 'none'">
+
+                    <span
+                        class="absolute top-4 left-[18px] z-10 font-mono text-[.66rem] text-white/30 tracking-[.08em]">
                         0{{i + 1}} — {{ proj.title }}
                     </span>
+
+                    @if (proj.image) {
+                    <img [src]="proj.image"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    } @else {
                     <span class="text-[3rem] opacity-55">🚀</span>
+                    }
                 </div>
 
                 <div class="p-7">
