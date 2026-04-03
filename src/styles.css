@@ -101,15 +101,16 @@
         color: var(--body);
     }
 
+    /* Ensure the reveal state is set for the IntersectionObserver */
     .reveal {
         opacity: 0;
-        transform: translateY(28px);
-        transition: opacity .7s ease, transform .7s ease;
+        transform: translateY(20px);
+        transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .reveal.visible {
         opacity: 1;
-        transform: none;
+        transform: translateY(0);
     }
 
     .d1 {
@@ -141,16 +142,10 @@
     }
 
     /* ── Timeline item: delete exit animation ───────────────────── */
-    /*
-     * Applied by [class.tl-exit]="isDeleting(exp.id)" in the template.
-     * Overrides tl-vis so the card animates out before being removed from the DOM.
-     * overflow: hidden on the wrapper lets max-height collapse cleanly,
-     * preventing the gap left by a suddenly-removed element.
-     */
+    /* Specifically for the project cards to handle the exit animation padding */
     .tl-item.tl-exit {
         animation: tlExit 0.48s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         pointer-events: none;
-        /* prevent double-click during animation */
         overflow: hidden;
     }
 

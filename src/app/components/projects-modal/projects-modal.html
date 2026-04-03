@@ -1,0 +1,47 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md bg-black/40">
+    <div class="w-full max-w-lg t-card rounded-2xl overflow-hidden shadow-2xl border-white/10">
+        <div class="p-6 border-b t-border flex justify-between items-center bg-white/5">
+            <h3 class="font-syne font-bold text-xl t-fg">{{ mode === 'add' ? 'Add Project' : 'Edit Project' }}</h3>
+            <button (click)="close.emit()" class="t-muted hover:t-fg">✕</button>
+        </div>
+
+        <form (ngSubmit)="submit()" class="p-6 space-y-4">
+            <div>
+                <label class="block font-mono text-[10px] uppercase tracking-widest t-muted mb-1.5">Project
+                    Title</label>
+                <input [(ngModel)]="project.title" name="title" required
+                    class="w-full bg-white/5 border t-border rounded-lg px-4 py-2.5 t-fg focus:outline-none focus:border-blue-500 transition-colors">
+            </div>
+
+            <div>
+                <label class="block font-mono text-[10px] uppercase tracking-widest t-muted mb-1.5">GitHub URL</label>
+                <input [(ngModel)]="project.github_url" name="github_url"
+                    class="w-full bg-white/5 border t-border rounded-lg px-4 py-2.5 t-fg focus:outline-none focus:border-blue-500 transition-colors">
+            </div>
+
+            <div>
+                <label class="block font-mono text-[10px] uppercase tracking-widest t-muted mb-1.5">Description</label>
+                <textarea [(ngModel)]="project.description" name="description" rows="4"
+                    class="w-full bg-white/5 border t-border rounded-lg px-4 py-2.5 t-fg focus:outline-none focus:border-blue-500 transition-colors resize-none"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-mono text-[10px] uppercase tracking-widest t-muted mb-1.5">Sort
+                        Order</label>
+                    <input type="number" [(ngModel)]="project.sort_order" name="sort_order"
+                        class="w-full bg-white/5 border t-border rounded-lg px-4 py-2.5 t-fg">
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" (click)="close.emit()"
+                    class="flex-1 px-4 py-2.5 rounded-lg border t-border t-fg hover:bg-white/5 transition-all">Cancel</button>
+                <button type="submit" [disabled]="isSaving"
+                    class="flex-1 px-4 py-2.5 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all disabled:opacity-50">
+                    {{ isSaving ? 'Saving...' : 'Save Project' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
