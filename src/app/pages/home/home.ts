@@ -35,12 +35,9 @@ export class Home implements AfterViewInit, OnDestroy {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const context: CanvasRenderingContext2D = ctx;
 
-    let W = 0;
-    let H = 0;
-    const mouse = { x: -9999, y: -9999 };
-    const COUNT = 68;
+    let W = 0, H = 0;
+    const COUNT = 80;
     const particles: P[] = [];
     const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
 
@@ -53,78 +50,70 @@ export class Home implements AfterViewInit, OnDestroy {
     this.cleanup.push(() => window.removeEventListener('resize', resize));
 
     class P {
-      x = 0; y = 0; r = 0; vx = 0; vy = 0; a = 0; lf = 0; ml = 0;
+      x = 0; y = 0; r = 0; vx = 0; vy = 0; opacity = 0;
+
       constructor() { this.init(true); }
+
       init(rnd: boolean) {
         this.x = Math.random() * W;
-        this.y = rnd ? Math.random() * H : H + 8;
-        this.r = Math.random() * 1.6 + 0.3;
-        this.vx = (Math.random() - 0.5) * 0.22;
-        this.vy = -(Math.random() * 0.3 + 0.07);
-        this.a = Math.random() * 0.55 + 0.1;
-        this.lf = 0;
-        this.ml = Math.random() * 300 + 120;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 2 + 1;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random() * 0.5 + 0.2;
       }
+
       tick() {
-        const dx = this.x - mouse.x;
-        const dy = this.y - mouse.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 100) {
-          const f = (100 - d) / 100 * 0.36;
-          this.vx += (dx / d) * f;
-          this.vy += (dy / d) * f;
-        }
-        this.vx *= 0.98;
-        this.vy *= 0.98;
         this.x += this.vx;
         this.y += this.vy;
-        this.lf++;
-        if (this.lf > this.ml || this.y < -12) this.init(false);
+
+
+        if (this.x < -10) this.x = W + 10;
+        if (this.x > W + 10) this.x = -10;
+        if (this.y < -10) this.y = H + 10;
+        if (this.y > H + 10) this.y = -10;
       }
+
       draw() {
-        const t = this.lf / this.ml;
-        const f = t < 0.1 ? t / 0.1 : t > 0.82 ? 1 - (t - 0.82) / 0.18 : 1;
-        context.globalAlpha = this.a * f * (isDark() ? 0.9 : 0.28);
-        context.fillStyle = isDark() ? '#60a5fa' : '#2563eb';
-        context.beginPath();
-        context.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        context.fill();
+        ctx!.globalAlpha = this.opacity;
+        ctx!.fillStyle = isDark() ? '#60a5fa' : '#2563eb';
+        ctx!.beginPath();
+        ctx!.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx!.fill();
       }
     }
 
     for (let i = 0; i < COUNT; i++) particles.push(new P());
 
-    const lines = () => {
+    const drawLines = () => {
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 115) {
-            context.globalAlpha = (1 - d / 115) * 0.1 * (isDark() ? 1 : 0.35);
-            context.strokeStyle = isDark() ? '#3b82f6' : '#2563eb';
-            context.lineWidth = 0.6;
-            context.beginPath();
-            context.moveTo(particles[i].x, particles[i].y);
-            context.lineTo(particles[j].x, particles[j].y);
-            context.stroke();
+
+          if (d < 150) {
+
+            ctx!.globalAlpha = (1 - d / 150) * 0.4 * (isDark() ? 1 : 0.6);
+            ctx!.strokeStyle = isDark() ? '#3b82f6' : '#2563eb';
+            ctx!.lineWidth = 0.8;
+            ctx!.beginPath();
+            ctx!.moveTo(particles[i].x, particles[i].y);
+            ctx!.lineTo(particles[j].x, particles[j].y);
+            ctx!.stroke();
           }
         }
       }
     };
 
     const loop = () => {
-      context.clearRect(0, 0, W, H);
-      lines();
+      ctx!.clearRect(0, 0, W, H);
+      drawLines();
       particles.forEach(p => { p.tick(); p.draw(); });
-      context.globalAlpha = 1;
+      ctx!.globalAlpha = 1;
       this.rafId = requestAnimationFrame(loop);
     };
     loop();
-
-    const onMouse = (e: MouseEvent) => { mouse.x = e.clientX; mouse.y = e.clientY; };
-    document.addEventListener('mousemove', onMouse);
-    this.cleanup.push(() => document.removeEventListener('mousemove', onMouse));
   }
 
   private initReveal(): void {
@@ -151,19 +140,14 @@ export class Home implements AfterViewInit, OnDestroy {
   private initTicker(): void {
     const track = document.getElementById('tickerTrack') as HTMLElement | null;
     if (!track) return;
-
     const onLoad = () => {
       const pills = track.querySelectorAll('.lang-pill');
-      const half = pills.length / 2;
       let w = 0;
-      pills.forEach((p, i) => {
-        if (i < half) w += (p as HTMLElement).offsetWidth + 16;
-      });
+      pills.forEach((p, i) => { if (i < pills.length / 2) w += (p as HTMLElement).offsetWidth + 16; });
       const s = document.createElement('style');
       s.textContent = `@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-${w}px)}}`;
       document.head.appendChild(s);
     };
-
     window.addEventListener('load', onLoad);
     this.cleanup.push(() => window.removeEventListener('load', onLoad));
   }
