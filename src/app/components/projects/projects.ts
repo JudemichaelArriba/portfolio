@@ -32,9 +32,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     [...this.projectList()].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
   );
 
-  // KEY FIX: Tracks if we are currently talking to the backend
-  isFetching = signal(true); 
-  
+  isFetching = signal(true);
   isSaving = signal(false);
   showModal = signal(false);
   modalMode = signal<'add' | 'edit'>('add');
@@ -47,11 +45,9 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const cached = localStorage.getItem('cached_projects');
     if (cached) {
-      try { 
+      try {
         this.projectList.set(JSON.parse(cached));
-        // If we have cache, we can show it immediately, 
-        // but loadProjects will still run in background
-        this.isFetching.set(false); 
+        this.isFetching.set(false);
       } catch (e) { }
     }
     this.loadProjects();
@@ -154,15 +150,19 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleSave(data: Projects) {
-    this.isSaving.set(true);
-    const isAdd = this.modalMode() === 'add';
-    const request = isAdd ? this.projService.createProject(data) : this.projService.updateProject(data.id, data);
-    request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
-      next: (res) => {
-        this.projectList.update(old => isAdd ? [...old, res] : old.map(p => p.id === res.id ? res : p));
-        this.showModal.set(false);
-        if (isAdd) setTimeout(() => this.observeItems(), 100);
-      }
+    this.dialog.confirm('Confirm Save', 'Are you sure you want to save changes?', () => {
+      this.isSaving.set(true);
+      const isAdd = this.modalMode() === 'add';
+      const request = isAdd ? this.projService.createProject(data) : this.projService.updateProject(data.id, data);
+      request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
+        next: (res) => {
+          this.projectList.update(old => isAdd ? [...old, res] : old.map(p => p.id === res.id ? res : p));
+          this.showModal.set(false);
+          this.dialog.success('Success', 'Project saved successfully');
+          if (isAdd) setTimeout(() => this.observeItems(), 100);
+        },
+        error: () => this.dialog.error('Error', 'Failed to save project')
+      });
     });
   }
 }
