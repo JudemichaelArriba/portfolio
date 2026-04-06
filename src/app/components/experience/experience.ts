@@ -124,17 +124,13 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
       `Are you sure you want to delete "${exp.title}"?`,
       () => {
         const id = exp.id!;
-
-
         this.deletingIds.update(set => new Set([...set, id]));
         this.cdr.detectChanges();
-
 
         setTimeout(() => {
           this.expService.deleteExperience(id).subscribe({
             next: () => {
               this.zone.run(() => {
-
                 this.experienceList.update(old => old.filter(e => e.id !== id));
                 this.deletingIds.update(set => {
                   const next = new Set(set);
@@ -144,10 +140,8 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.saveCache(this.experienceList());
                 this.cdr.detectChanges();
               });
-
             },
             error: () => {
-
               this.zone.run(() => {
                 this.deletingIds.update(set => {
                   const next = new Set(set);
@@ -165,39 +159,46 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleSave(data: Experience) {
-    this.isSaving.set(true);
     const isAdd = this.modalMode() === 'add';
+    const label = isAdd ? 'Add Experience' : 'Save Changes';
+    const message = isAdd
+      ? 'Are you sure you want to add this experience?'
+      : `Are you sure you want to save changes to "${data.title}"?`;
 
-    const request = isAdd
-      ? this.expService.createExperience(data)
-      : this.expService.updateExperience(data.id!, data);
+    this.dialog.confirm(label, message, () => {
+      this.isSaving.set(true);
 
-    request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
-      next: (responseItem: Experience) => {
-        this.zone.run(() => {
-          this.experienceList.update(old => {
+      const request = isAdd
+        ? this.expService.createExperience(data)
+        : this.expService.updateExperience(data.id!, data);
+
+      request.pipe(finalize(() => this.isSaving.set(false))).subscribe({
+        next: (responseItem: Experience) => {
+          this.zone.run(() => {
+            this.experienceList.update(old => {
+              if (isAdd) {
+                const newItem = { ...responseItem, id: responseItem.id ?? Date.now() };
+                return [...old, newItem];
+              } else {
+                return old.map(item => item.id === responseItem.id ? responseItem : item);
+              }
+            });
+
+            this.saveCache(this.experienceList());
+            this.showModal.set(false);
+            this.cdr.detectChanges();
+
             if (isAdd) {
-              const newItem = { ...responseItem, id: responseItem.id ?? Date.now() };
-              return [...old, newItem];
-            } else {
-              return old.map(item => item.id === responseItem.id ? responseItem : item);
+              setTimeout(() => this.observeItems(), 60);
             }
           });
 
-          this.saveCache(this.experienceList());
-          this.showModal.set(false);
-          this.cdr.detectChanges();
-
-          if (isAdd) {
-            setTimeout(() => this.observeItems(), 60);
-          }
-        });
-
-        this.dialog.success('Success', 'Experience saved!');
-      },
-      error: () => {
-        this.dialog.error('Error', 'Save failed.');
-      }
+          this.dialog.success('Success', 'Experience saved!');
+        },
+        error: () => {
+          this.dialog.error('Error', 'Save failed.');
+        }
+      });
     });
   }
 }
